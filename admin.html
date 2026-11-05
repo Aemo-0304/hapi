@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>法被圖鑑｜後台管理</title>
+<link rel="stylesheet" type="text/css" href="HAPI.CSS"/>
+<style>
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.login{max-width:340px;margin:60px auto;text-align:center}
+.login input{width:100%;margin:12px 0}
+input[type=text],input[type=password],input[type=number],select.in{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);width:100%}
+.btn{padding:9px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.danger{color:#d33;border-color:#d335}
+.btn.sm{padding:4px 10px;font-size:14px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tabs .btn[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.tools input,.tools select{flex:1 1 180px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--muted);font-weight:600}
+td .thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;display:block;background:var(--line)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.scroll{overflow-x:auto}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.form .full{grid-column:1/-1}
+.preview{width:480px;max-width:100%;aspect-ratio:1;height:auto;border-radius:12px;object-fit:contain;cursor:zoom-in;border:1px solid var(--line);background:var(--line)}
+dialog.big{max-width:560px}
+.list-row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.list-row input[type=text]{flex:1}
+.list-row input[type=range]{width:120px}
+.members{margin:0 0 10px 28px;padding-left:12px;border-left:3px solid var(--line)}
+.members .list-row{padding:4px 0}
+.list-row input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer}
+.sec{margin-bottom:24px}
+.sec h3{margin:0 0 8px}
+.muted{color:var(--muted);font-size:14px}
+.savebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;margin-bottom:14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-size:14px}
+.savebar.warn{border-color:#e0a100;background:color-mix(in srgb,#ffcc33 18%,var(--panel))}
+.savebar.ok{border-color:#2fa36b;background:color-mix(in srgb,#2fa36b 12%,var(--panel))}
+.savebar span{flex:1;min-width:200px}
+@media (max-width:600px){.form{grid-template-columns:1fr}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>法被圖鑑・後台</h1>
+  <div style="display:flex;gap:8px">
+    <a class="iconbtn" href="法被圖鑑｜收藏資料庫.html" style="text-decoration:none">回前台</a>
+    <button class="iconbtn" id="logout" type="button" hidden>登出</button>
+  </div>
+</header>
+
+<!-- 登入 -->
+<div class="wrap" id="v-login">
+  <form class="card login" id="loginForm">
+    <h2 style="margin:0">後台登入</h2>
+    <input type="password" id="pw" placeholder="請輸入密碼" autocomplete="current-password" required>
+    <button class="btn pri" style="width:100%">登入</button>
+    <p class="muted" id="pwhint">預設密碼：admin（登入後請到「設定」修改）</p>
+  </form>
+</div>
+
+<!-- 主畫面 -->
+<div class="wrap" id="v-app" hidden>
+  <div class="savebar warn" id="savebar"><span id="savemsg">檢查儲存位置中…</span><button class="btn sm pri" id="connect" type="button" hidden>連結網站資料夾</button></div>
+  <div class="tabs" role="tablist">
+    <button class="btn" role="tab" data-tab="items" aria-selected="true">法被管理</button>
+    <button class="btn" role="tab" data-tab="lists" aria-selected="false">團體／活動／地點</button>
+    <button class="btn" role="tab" data-tab="help" aria-selected="false">前台說明</button>
+    <button class="btn" role="tab" data-tab="settings" aria-selected="false">設定</button>
+  </div>
+
+  <section id="t-items" class="card">
+    <div class="tools">
+      <input type="search" id="aq" placeholder="搜尋名稱…" class="in" style="padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)">
+      <select id="ag" class="in" style="flex:0 1 200px"></select>
+      <button class="btn pri" id="add" type="button">＋ 新增法被</button>
+    </div>
+    <p class="muted" id="acount"></p>
+    <div class="scroll"><table>
+      <thead><tr><th>圖</th><th>名稱</th><th>團體</th><th class="hide-sm">發售</th><th class="hide-sm">活動</th><th class="hide-sm">地點</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </section>
+
+  <section id="t-lists" class="card" hidden>
+    <div class="sec">
+      <h3>團體</h3>
+      <p class="muted">拖曳滑桿調整團體代表色；團體下方可新增團員（角色）並設定顏色。刪除團體前需先移除或改掉該團體的法被。</p>
+      <div id="l-groups"></div>
+      <button class="btn sm" id="addGroup" type="button" style="margin-top:8px">＋ 新增團體</button>
+    </div>
+    <div class="sec">
+      <h3>活動</h3>
+      <div id="l-events"></div>
+      <button class="btn sm" data-add="events" type="button" style="margin-top:8px">＋ 新增活動</button>
+    </div>
+    <div class="sec">
+      <h3>販售地點</h3>
+      <div id="l-places"></div>
+      <button class="btn sm" data-add="places" type="button" style="margin-top:8px">＋ 新增地點</button>
+    </div>
+  </section>
+
+  <section id="t-help" class="card" hidden>
+    <div class="form" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div style="display:grid;gap:10px">
+        <label class="muted" style="display:grid;gap:4px">標題<input type="text" id="h-title"></label>
+        <label class="muted" style="display:grid;gap:4px">內容
+          <textarea id="h-text" rows="14" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font:inherit;line-height:1.6;resize:vertical"></textarea></label>
+        <p class="muted" style="margin:0">格式：每行一段；「- 」開頭為項目符號；**文字** 變粗體；網址會自動變成連結。</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn pri" id="h-save" type="button">儲存說明</button>
+          <button class="btn" id="h-reset" type="button">恢復預設內容</button>
+        </div>
+      </div>
+      <div>
+        <p class="muted" style="margin:0 0 4px">預覽（前台按「說明」看到的樣子）</p>
+        <div style="border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--bg)">
+          <h2 id="h-pv-title" style="margin:0 0 12px;font-size:20px"></h2>
+          <div class="helpbody" id="h-pv"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="t-settings" class="card" hidden>
+    <div class="sec">
+      <h3>修改後台密碼</h3>
+      <form id="pwForm" style="display:flex;gap:8px;flex-wrap:wrap;max-width:460px">
+        <input type="password" id="npw" placeholder="新密碼" required minlength="4" style="flex:1">
+        <button class="btn pri">更新密碼</button>
+      </form>
+    </div>
+    <div class="sec">
+      <h3>資料</h3>
+      <p class="muted">連結網站資料夾後，每次修改都會自動存成資料夾裡的 db.js，前台直接讀這個檔；瀏覽器只留一份備份。照片會放在 photos 資料夾。</p>
+      <button class="btn" id="dlDb" type="button">下載 db.js 備份</button>
+      <button class="btn danger" id="resetDemo" type="button">還原成示範資料</button>
+    </div>
+  </section>
+</div>
+
+<!-- 法被編輯視窗 -->
+<dialog id="edit" class="big">
+  <form id="itemForm" method="dialog">
+    <h2 style="margin:0 0 14px" id="editTitle">新增法被</h2>
+    <div class="form">
+      <label class="full">名稱<input type="text" id="f-name" required></label>
+      <label>團體<select class="in" id="f-group" required></select></label>
+      <label id="f-member-wrap">角色<select class="in" id="f-member"></select></label>
+      <label>活動<select class="in" id="f-event"></select></label>
+      <label>發售年<input type="number" id="f-year" min="1990" max="2100" required></label>
+      <label>發售月<input type="number" id="f-month" min="1" max="12" required></label>
+      <label class="full">販售地點<select class="in" id="f-place"></select></label>
+      <div class="full" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1 1 100%;display:grid;gap:4px;font-size:14px;color:var(--muted)">照片連結
+          <div style="display:flex;gap:8px">
+            <input type="text" id="f-link" placeholder="photos/檔名.jpg 或 https://…" style="flex:1">
+            <label class="btn" style="color:inherit">從 photos 選<input type="file" id="f-photo" accept="image/*" hidden></label>
+            <button class="btn" id="f-clear" type="button">清除</button>
+          </div>
+          <span class="muted">先把照片放進網站的 photos 資料夾，再填「photos/檔名」；也可以貼網路上的圖片網址。</span>
+        </div>
+        <img class="preview" id="f-prev" alt="照片預覽">
+        <p class="muted" id="f-err" style="margin:0;color:#d33" hidden>找不到這張照片，請確認檔案已放進 photos 資料夾、檔名正確。</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+      <button class="btn" type="button" id="cancel">取消</button>
+      <button class="btn pri" type="submit">儲存</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="db.js"></script>
+<script src="data.js"></script>
+<script>
+var $=function(id){return document.getElementById(id)};
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var DB=Store.load();
+function save(){return Store.save(DB)}
+
+// ===== 密碼（純前端，只能擋一般訪客）=====
+var PWKEY="hapi-admin-pw",AUTH="hapi-admin-auth";
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return("salt"+(h>>>0).toString(16))}
+function pwHash(){try{return localStorage.getItem(PWKEY)||hash("admin")}catch(e){return hash("admin")}}
+function authed(){try{return sessionStorage.getItem(AUTH)===pwHash()}catch(e){return false}}
+function showApp(on){$("v-login").hidden=on;$("v-app").hidden=!on;$("logout").hidden=!on;if(on){renderAll();initFolder()}}
+try{if(localStorage.getItem(PWKEY))$("pwhint").textContent=""}catch(e){}
+$("loginForm").onsubmit=function(e){e.preventDefault();
+  if(hash($("pw").value)===pwHash()){try{sessionStorage.setItem(AUTH,pwHash())}catch(e){}showApp(true)}
+  else{alert("密碼錯誤");$("pw").select()}};
+$("logout").onclick=function(){try{sessionStorage.removeItem(AUTH)}catch(e){}$("pw").value="";showApp(false)};
+$("pwForm").onsubmit=function(e){e.preventDefault();var h=hash($("npw").value);
+  try{localStorage.setItem(PWKEY,h);sessionStorage.setItem(AUTH,h)}catch(e){}$("npw").value="";alert("密碼已更新")};
+
+// ===== 分頁 =====
+Array.prototype.forEach.call(document.querySelectorAll("[data-tab]"),function(b){
+  b.onclick=function(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tab]"),function(x){
+      x.setAttribute("aria-selected",x===b);$("t-"+x.dataset.tab).hidden=x!==b});
+  }});
+
+// ===== 法被列表 =====
+function group(id){return DB.groups.filter(function(g){return g.id===id})[0]}
+function mname(d){
+  var g=group(d.group);if(!g||!d.member)return "";
+  if(d.member==="all")return g.name+"全團";
+  var m=(g.members||[]).filter(function(m){return m.id===d.member})[0];return m?m.name:"";
+}
+function fillMembers(gid,cur){
+  var g=group(gid),ms=g&&g.members||[];
+  $("f-member-wrap").style.display=ms.length?"":"none";
+  if(!ms.length){$("f-member").innerHTML="";return}
+  fillSelect($("f-member"),[{id:"all",name:g.name+"全團"}].concat(ms),cur||"all");
+}
+function fillSelect(el,vals,cur,blank){
+  el.innerHTML=(blank?'<option value="">'+blank+'</option>':"")+vals.map(function(v){
+    var val=typeof v==="object"?v.id:v,lab=typeof v==="object"?v.name:v;
+    return '<option value="'+esc(val)+'"'+(val===cur?" selected":"")+'>'+esc(lab)+'</option>'}).join("");
+}
+function renderItems(){
+  var q=$("aq").value.trim().toLowerCase(),gf=$("ag").value;
+  var list=DB.items.filter(function(d){return(!gf||d.group===gf)&&(!q||d.name.toLowerCase().indexOf(q)>=0)})
+    .sort(function(a,b){return b.id-a.id});
+  $("acount").textContent="共 "+list.length+" 件（全部 "+DB.items.length+" 件）";
+  $("rows").innerHTML=list.map(function(d){
+    var g=group(d.group)||{name:"（未分類）",hue:0};
+    return '<tr><td>'+(d.photo?'<img class="thumb" src="'+esc(d.photo)+'" alt="">':'<span class="thumb" style="background:hsl('+g.hue+' 70% 42%)"></span>')+'</td>'
+      +'<td>'+esc(d.name)+(mname(d)?'<br><small class="muted">'+esc(mname(d))+'</small>':'')+'</td><td><span class="dot" style="background:hsl('+g.hue+' 80% 55%)"></span>'+esc(g.name)+'</td>'
+      +'<td class="hide-sm">'+d.year+'/'+d.month+'</td><td class="hide-sm">'+esc(d.event||"")+'</td><td class="hide-sm">'+esc(d.place||"")+'</td>'
+      +'<td style="white-space:nowrap"><button class="btn sm" data-ed="'+d.id+'">編輯</button> <button class="btn sm danger" data-del="'+d.id+'">刪除</button></td></tr>';
+  }).join("");
+}
+$("rows").onclick=function(e){
+  var t=e.target;
+  if(t.dataset.ed)openEdit(+t.dataset.ed);
+  if(t.dataset.del){var d=DB.items.filter(function(x){return x.id===+t.dataset.del})[0];
+    if(confirm("確定刪除「"+d.name+"」？")){DB.items=DB.items.filter(function(x){return x!==d});save();renderItems()}}
+};
+$("aq").oninput=renderItems;$("ag").onchange=renderItems;
+
+// ===== 編輯視窗 =====
+var editing=null,photo="";
+function openEdit(id){
+  var d=id?DB.items.filter(function(x){return x.id===id})[0]:null;editing=d;
+  $("editTitle").textContent=d?"編輯法被":"新增法被";
+  fillSelect($("f-group"),DB.groups,d?d.group:DB.groups[0]&&DB.groups[0].id);
+  fillMembers($("f-group").value,d&&d.member);
+  fillSelect($("f-event"),DB.events,d?d.event:"","（無）");
+  fillSelect($("f-place"),DB.places,d?d.place:DB.places[0],"（無）");
+  var now=new Date();
+  $("f-name").value=d?d.name:"";$("f-year").value=d?d.year:now.getFullYear();$("f-month").value=d?d.month:now.getMonth()+1;
+  photo=d?d.photo||"":"";$("f-photo").value="";
+  var embedded=photo.indexOf("data:")===0;
+  $("f-link").value=embedded?"":photo;
+  $("f-link").placeholder=embedded?"目前是舊的內嵌照片；填入連結即可取代":"photos/檔名.jpg 或 https://…";
+  showPrev();
+  $("edit").showModal();
+}
+var BLANK="data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+function showPrev(){$("f-err").hidden=true;$("f-prev").src=photo||BLANK}
+$("f-prev").onerror=function(){if(photo){$("f-err").hidden=false;this.src=BLANK}};
+$("f-link").oninput=function(){photo=this.value.trim();showPrev()};
+$("f-group").onchange=function(){fillMembers(this.value)};
+$("add").onclick=function(){if(!DB.groups.length){alert("請先新增團體");return}openEdit(null)};
+$("cancel").onclick=function(){$("edit").close()};
+$("f-prev").onclick=function(){if(photo&&$("f-err").hidden)window.open(photo,"_blank")};
+$("f-clear").onclick=function(){photo="";$("f-link").value="";showPrev()};
+// 從 photos 資料夾挑檔案：只取檔名，自動填成 photos/檔名
+$("f-photo").onchange=function(){
+  var f=this.files[0],inp=this;if(!f)return;inp.value="";
+  if(!dirOK){photo="photos/"+f.name;$("f-link").value=photo;showPrev();return}
+  copyPhoto(f).then(function(name){photo="photos/"+name;$("f-link").value=photo;showPrev()})
+    .catch(function(e){alert("照片複製到 photos 資料夾失敗："+e.message)});
+};
+$("itemForm").onsubmit=function(e){
+  e.preventDefault();
+  var rec={name:$("f-name").value.trim(),group:$("f-group").value,event:$("f-event").value,place:$("f-place").value,
+    year:+$("f-year").value,month:+$("f-month").value,photo:photo,
+    member:$("f-member-wrap").style.display==="none"?"":$("f-member").value};
+  if(!rec.name){alert("請輸入名稱");return}
+  var backup=JSON.stringify(DB.items);
+  if(editing)Object.assign(editing,rec);
+  else{rec.id=DB.items.reduce(function(m,x){return Math.max(m,x.id)},0)+1;DB.items.push(rec)}
+  if(!save()){DB.items=JSON.parse(backup);return}
+  $("edit").close();renderItems();
+};
+
+// ===== 清單管理 =====
+function renderLists(){
+  $("l-groups").innerHTML=DB.groups.map(function(g,i){
+    var n=DB.items.filter(function(d){return d.group===g.id}).length;
+    return '<div class="list-row"><span class="dot" style="width:18px;height:18px;background:hsl('+g.hue+' 80% 55%)"></span>'
+      +'<input type="text" value="'+esc(g.name)+'" data-gname="'+i+'">'
+      +'<input type="range" min="0" max="359" value="'+g.hue+'" data-ghue="'+i+'" aria-label="代表色">'
+      +'<span class="muted">'+n+' 件</span><button class="btn sm danger" data-gdel="'+i+'">刪除</button></div>'
+      +'<div class="members"><div class="list-row">'
+        +(g.logo?'<img src="'+esc(g.logo)+'" alt="" style="width:90px;height:30px;object-fit:contain">':'<span class="muted" style="width:90px">無 LOGO</span>')
+        +'<input type="text" value="'+esc(g.logo||"")+'" data-glogo="'+i+'" placeholder="LOGO 連結：photos/檔名">'
+        +'<label class="btn sm" style="color:inherit">選圖<input type="file" accept="image/*" data-glogofile="'+i+'" hidden></label></div>'
+        +(g.members||[]).map(function(m,j){
+        var c=DB.items.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
+        return '<div class="list-row"><input type="color" value="'+esc(m.color)+'" data-mcol="'+i+'" data-j="'+j+'" aria-label="團員代表色">'
+          +'<input type="text" value="'+esc(m.name)+'" data-mname="'+i+'" data-j="'+j+'">'
+          +'<span class="muted">'+c+' 件</span><button class="btn sm danger" data-mdel="'+i+'" data-j="'+j+'">刪除</button></div>';
+      }).join("")+'<button class="btn sm" data-madd="'+i+'" type="button">＋ 新增團員</button></div>';
+  }).join("");
+  ["events","places"].forEach(function(k){
+    $("l-"+k).innerHTML=DB[k].map(function(v,i){
+      var n=DB.items.filter(function(d){return d[k==="events"?"event":"place"]===v}).length;
+      return '<div class="list-row"><input type="text" value="'+esc(v)+'" data-k="'+k+'" data-i="'+i+'"><span class="muted">'+n+' 件</span><button class="btn sm danger" data-kdel="'+k+'" data-i="'+i+'">刪除</button></div>';
+    }).join("");
+  });
+}
+$("t-lists").addEventListener("input",function(e){
+  var t=e.target;
+  if(t.dataset.ghue){DB.groups[+t.dataset.ghue].hue=+t.value;t.previousElementSibling.previousElementSibling.style.background="hsl("+t.value+" 80% 55%)"}
+});
+$("t-lists").addEventListener("change",function(e){
+  var t=e.target;
+  if(t.dataset.mcol){DB.groups[+t.dataset.mcol].members[+t.dataset.j].color=t.value}
+  if(t.dataset.mname){var mv=t.value.trim(),mm=DB.groups[+t.dataset.mname].members[+t.dataset.j];if(mv)mm.name=mv;else t.value=mm.name}
+  if(t.dataset.glogo){DB.groups[+t.dataset.glogo].logo=t.value.trim()}
+  if(t.dataset.glogofile){var lf=t.files[0],gi=+t.dataset.glogofile;if(!lf)return;
+    (dirOK?copyPhoto(lf):Promise.resolve(lf.name)).then(function(nm){DB.groups[gi].logo="photos/"+nm;save();renderLists()})
+      .catch(function(e){alert("LOGO 複製到 photos 失敗："+e.message)});return}
+  if(t.dataset.gname){var v=t.value.trim();if(v)DB.groups[+t.dataset.gname].name=v;else t.value=DB.groups[+t.dataset.gname].name}
+  if(t.dataset.k){
+    var k=t.dataset.k,i=+t.dataset.i,old=DB[k][i],v=t.value.trim(),f=k==="events"?"event":"place";
+    if(!v||DB[k].indexOf(v)>=0&&v!==old){t.value=old;return}
+    DB[k][i]=v;DB.items.forEach(function(d){if(d[f]===old)d[f]=v}); // 改名時一併更新法被
+  }
+  save();renderLists();renderItems();fillFilters();
+});
+$("t-lists").addEventListener("click",function(e){
+  var t=e.target;
+  if(t.dataset.gdel){var g=DB.groups[+t.dataset.gdel];
+    if(DB.items.some(function(d){return d.group===g.id})){alert("「"+g.name+"」還有法被，請先刪除或改到其他團體。");return}
+    if(confirm("刪除團體「"+g.name+"」？")){DB.groups.splice(+t.dataset.gdel,1);save();renderAll()}}
+  if(t.dataset.madd){var gg=DB.groups[+t.dataset.madd],nm=prompt("團員名稱");
+    if(nm&&(nm=nm.trim())){(gg.members=gg.members||[]).push({id:"m"+Date.now().toString(36),name:nm,color:"#"+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,"0")});save();renderAll()}}
+  if(t.dataset.mdel){var g2=DB.groups[+t.dataset.mdel],m2=g2.members[+t.dataset.j];
+    if(confirm("刪除團員「"+m2.name+"」？該團員的法被會改為「全團」。")){g2.members.splice(+t.dataset.j,1);
+      DB.items.forEach(function(d){if(d.group===g2.id&&d.member===m2.id)d.member=g2.members.length?"all":""});save();renderAll()}}
+  if(t.dataset.kdel){var k=t.dataset.kdel,i=+t.dataset.i,v=DB[k][i];
+    if(confirm("刪除「"+v+"」？已使用的法被會改為（無）。")){DB[k].splice(i,1);
+      DB.items.forEach(function(d){var f=k==="events"?"event":"place";if(d[f]===v)d[f]=""});save();renderAll()}}
+  if(t.dataset.add){var k2=t.dataset.add,name=prompt("輸入名稱");
+    if(name&&(name=name.trim())){if(DB[k2].indexOf(name)>=0){alert("已存在");return}DB[k2].push(name);save();renderLists()}}
+});
+$("addGroup").onclick=function(){
+  var name=prompt("團體名稱");if(!name||!(name=name.trim()))return;
+  DB.groups.push({id:"g"+Date.now().toString(36),name:name,hue:Math.floor(Math.random()*360)});save();renderAll();
+};
+$("resetDemo").onclick=function(){if(confirm("所有自訂資料與照片都會被清除，確定還原？")){DB=Store.reset();save();renderAll();alert("已還原")}};
+
+function fillFilters(){var c=$("ag").value;fillSelect($("ag"),DB.groups,c,"全部團體")}
+function renderAll(){fillFilters();renderItems();renderLists();loadHelp()}
+// ===== 存到網站資料夾（Chrome / Edge 的資料夾存取功能）=====
+var dirH=null,dirOK=false,SUPPORT=!!window.showDirectoryPicker;
+function idb(){return new Promise(function(res,rej){var r=indexedDB.open("hapi-admin",1);
+  r.onupgradeneeded=function(){r.result.createObjectStore("kv")};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}})}
+function kv(k,v){return idb().then(function(db){return new Promise(function(res){
+  var st=db.transaction("kv",v===undefined?"readonly":"readwrite").objectStore("kv");
+  var q=v===undefined?st.get(k):st.put(v,k);q.onsuccess=function(){res(q.result)};q.onerror=function(){res(null)}})})}
+function bar(type,msg,btn){var b=$("savebar");b.className="savebar "+type;$("savemsg").textContent=msg;
+  $("connect").hidden=!btn;if(btn)$("connect").textContent=btn}
+function perm(h,ask){if(!h.queryPermission)return Promise.resolve(true);var o={mode:"readwrite"};
+  return h.queryPermission(o).then(function(p){return p==="granted"?true:ask?h.requestPermission(o).then(function(p){return p==="granted"}):false})}
+function initFolder(){
+  if(!SUPPORT){bar("warn","這個瀏覽器不支援直接存到資料夾，資料只存在瀏覽器。請改用 Chrome 或 Edge 開啟後台。");return}
+  kv("dir").then(function(h){
+    if(!h){bar("warn","尚未連結網站資料夾：目前的修改只存在瀏覽器。","連結網站資料夾");return}
+    dirH=h;return perm(h,false).then(function(ok){
+      if(ok)ready();else bar("warn","需要重新允許存取「"+h.name+"」資料夾才能存檔。","允許存取");
+    });
+  }).catch(function(){bar("warn","無法讀取資料夾設定。","連結網站資料夾")});
+}
+function ready(){dirOK=true;Store.onSave=writeDb;bar("ok","已連結「"+dirH.name+"」資料夾，修改會自動存到 db.js。","更換資料夾");}
+$("connect").onclick=function(){
+  if(dirH&&!dirOK){perm(dirH,true).then(function(ok){if(ok){ready();writeDb(DB)}});return}
+  window.showDirectoryPicker({mode:"readwrite",id:"hapi-site"}).then(function(h){
+    return h.getFileHandle("法被圖鑑｜收藏資料庫.html").then(function(){return h},function(){
+      if(!confirm("這個資料夾裡找不到「法被圖鑑｜收藏資料庫.html」，確定要用它嗎？\n（請選放網站檔案的「網頁」資料夾）"))throw new Error("cancel");return h});
+  }).then(function(h){dirH=h;return kv("dir",h)}).then(function(){ready();writeDb(DB)})
+    .catch(function(e){if(e.name!=="AbortError"&&e.message!=="cancel")alert("連結失敗："+e.message)});
+};
+function dbText(db){return "// 由後台自動產生，請不要手動修改\nwindow.HAPI_DB="+JSON.stringify(db)+";\n"}
+var writing=Promise.resolve();
+function writeDb(db){
+  if(!dirH)return;
+  var text=dbText(db);
+  writing=writing.then(function(){return dirH.getFileHandle("db.js",{create:true})})
+    .then(function(fh){return fh.createWritable()}).then(function(w){return w.write(text).then(function(){return w.close()})})
+    .then(function(){bar("ok","已存到「"+dirH.name+"」資料夾的 db.js（"+new Date().toLocaleTimeString()+"）","更換資料夾")})
+    .catch(function(e){dirOK=false;bar("warn","存檔到資料夾失敗："+e.message+"（修改仍保留在瀏覽器）","允許存取")});
+}
+// 把選到的照片複製進 photos 資料夾；同名但內容不同時自動改名
+function copyPhoto(f){
+  return dirH.getDirectoryHandle("photos",{create:true}).then(function(pd){
+    function put(name){return pd.getFileHandle(name).then(function(fh){return fh.getFile().then(function(old){
+        if(old.size===f.size)return name; // 已經在 photos 裡了
+        var dot=name.lastIndexOf("."),n2=(dot>0?name.slice(0,dot):name)+"-"+Date.now().toString(36)+(dot>0?name.slice(dot):"");
+        return put(n2)})},
+      function(){return pd.getFileHandle(name,{create:true}).then(function(fh){return fh.createWritable()})
+        .then(function(w){return w.write(f).then(function(){return w.close()})}).then(function(){return name})});
+    }
+    return put(f.name.replace(/\s+/g,"-"));
+  });
+}
+// ===== 前台說明 =====
+function helpPreview(){$("h-pv-title").textContent=$("h-title").value||Store.helpTitle;$("h-pv").innerHTML=Store.helpHtml($("h-text").value)}
+function loadHelp(){$("h-title").value=DB.helpTitle||Store.helpTitle;$("h-text").value=DB.help!=null?DB.help:Store.helpText;helpPreview()}
+$("h-title").oninput=helpPreview;$("h-text").oninput=helpPreview;
+$("h-save").onclick=function(){DB.helpTitle=$("h-title").value.trim()||Store.helpTitle;DB.help=$("h-text").value;if(save())alert("說明已儲存")};
+$("h-reset").onclick=function(){if(confirm("把說明恢復成預設內容？（按「儲存說明」後才會生效）")){$("h-title").value=Store.helpTitle;$("h-text").value=Store.helpText;helpPreview()}};
+$("dlDb").onclick=function(){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([dbText(DB)],{type:"text/javascript"}));a.download="db.js";a.click()};
+showApp(authed());
+</script>
+</body>
+</html>
