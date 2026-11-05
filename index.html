@@ -59,7 +59,7 @@
 <script src="db.js"></script>
 <script src="data.js"></script>
 <script>
-// ===== 資料（由 data.js 載入，可在後台 admin.html 編輯）=====
+// ===== （由 data.js 載入，可在後台 admin.html 編輯）=====
 var DB=Store.load();
 var GROUPS=DB.groups, PLACES=DB.places;
 var DATA=DB.items.filter(function(d){return GROUPS.some(function(g){return g.id===d.group})});
