@@ -50,7 +50,7 @@ dialog.big{max-width:560px}
 <header>
   <h1>法被圖鑑・後台</h1>
   <div style="display:flex;gap:8px">
-    <a class="iconbtn" href="法被圖鑑｜收藏資料庫.html" style="text-decoration:none">回前台</a>
+    <a class="iconbtn" href="index.html" style="text-decoration:none">回前台</a>
     <button class="iconbtn" id="logout" type="button" hidden>登出</button>
   </div>
 </header>
@@ -387,8 +387,8 @@ function ready(){dirOK=true;Store.onSave=writeDb;bar("ok","已連結「"+dirH.na
 $("connect").onclick=function(){
   if(dirH&&!dirOK){perm(dirH,true).then(function(ok){if(ok){ready();writeDb(DB)}});return}
   window.showDirectoryPicker({mode:"readwrite",id:"hapi-site"}).then(function(h){
-    return h.getFileHandle("法被圖鑑｜收藏資料庫.html").then(function(){return h},function(){
-      if(!confirm("這個資料夾裡找不到「法被圖鑑｜收藏資料庫.html」，確定要用它嗎？\n（請選放網站檔案的「網頁」資料夾）"))throw new Error("cancel");return h});
+    return h.getFileHandle("index.html").then(function(){return h},function(){
+      if(!confirm("這個資料夾裡找不到「index.html」，確定要用它嗎？\n（請選放網站檔案的「網頁」資料夾）"))throw new Error("cancel");return h});
   }).then(function(h){dirH=h;return kv("dir",h)}).then(function(){ready();writeDb(DB)})
     .catch(function(e){if(e.name!=="AbortError"&&e.message!=="cancel")alert("連結失敗："+e.message)});
 };
