@@ -9,6 +9,7 @@
 <header>
   <h1>法被圖鑑</h1>
   <div style="display:flex;gap:8px">
+    <button class="iconbtn" id="shop" type="button">二手平台推薦</button>
     <button class="iconbtn" id="help" type="button">說明</button>
     <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
   </div>
@@ -37,6 +38,11 @@
 </div>
 <footer><a href="https://www.threads.com/@aemo_gbp?hl=zh-tw" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">聯繫我</a></footer>
 
+<dialog id="shopdlg" aria-labelledby="shop-title" style="max-width:440px">
+  <h2 id="shop-title" style="margin:0 0 12px;font-size:20px">二手平台推薦</h2>
+  <div class="helpbody" id="shop-body"></div>
+  <button class="close" id="shop-close" type="button">關閉</button>
+</dialog>
 <dialog id="helpdlg" aria-labelledby="help-title" style="max-width:440px">
   <h2 id="help-title" style="margin:0 0 12px;font-size:20px">使用說明</h2>
   <div class="helpbody" id="help-body"></div>
@@ -218,6 +224,13 @@ $("help").onclick=function(){
   $("helpdlg").showModal();
 };
 $("help-close").onclick=function(){$("helpdlg").close()};
+$("shop").onclick=function(){
+  $("shop-title").textContent=DB.shopTitle||Store.shopTitle;
+  $("shop-body").innerHTML=Store.helpHtml(DB.shop!=null?DB.shop:Store.shopText);
+  $("shopdlg").showModal();
+};
+$("shop-close").onclick=function(){$("shopdlg").close()};
+$("shopdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 $("helpdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 $("dlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 $("q").oninput=function(){S.q=this.value;render()};

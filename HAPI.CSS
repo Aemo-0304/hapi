@@ -17,7 +17,8 @@ button,input,select{font:inherit;color:inherit}
 
 header{background:var(--grad);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
 header h1{margin:0;font-size:22px;letter-spacing:.03em}
-.iconbtn{border:1px solid #ffffff88;background:#ffffff22;color:#fff;border-radius:999px;padding:4px 14px;cursor:pointer}
+.iconbtn{border:1px solid #ffffff88;background:#ffffff22;color:#fff;border-radius:999px;padding:4px 14px;cursor:pointer;white-space:nowrap}
+@media (max-width:480px){header{padding:12px 14px}header h1{font-size:19px;white-space:nowrap}.iconbtn{padding:4px 10px;font-size:14px}}
 
 .bar{display:flex;gap:12px;padding:16px 20px;flex-wrap:wrap}
 .bar input[type=search],.bar select{padding:11px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}

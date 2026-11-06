@@ -60,10 +60,19 @@
       "- **翻頁**：放大後用「上一個／下一個」或鍵盤左右鍵切換，按 Esc 關閉。",
       "- **深色模式**：點右上角 🌙／☀️ 切換。"
     ].join("\n"),
-    // 說明文字格式：每行一段；「- 」開頭為項目符號；**文字** 為粗體；網址會變成連結
+    shopTitle:"二手平台推薦",
+    shopText:[
+      "以下是我常用、推薦的二手平台：",
+      "- **[平台名稱](https://example.com)**：簡單介紹",
+      "（請到後台「二手平台推薦」修改這裡的內容）"
+    ].join("\n"),
+    // 說明文字格式：每行一段；「- 」開頭為項目符號；**文字** 為粗體；[文字](網址) 為文字超連結；單獨的網址也會變成連結
     helpHtml:function(text){
       var e=function(t){return t.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
-      var fmt=function(t){return e(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')};
+      var fmt=function(t){return e(t)
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+        .replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")};
       var h="",inList=false;
       String(text||"").split(/\r?\n/).forEach(function(line){
         var t=line.trim();
