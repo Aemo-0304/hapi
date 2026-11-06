@@ -9,6 +9,7 @@
 <header>
   <h1>法被圖鑑</h1>
   <div style="display:flex;gap:8px">
+    <span class="iconbtn counter" id="visits" title="累計到訪人數（同一個瀏覽器分頁只算一次）">到訪人數：…</span>
     <button class="iconbtn" id="shop" type="button">二手平台推薦</button>
     <button class="iconbtn" id="help" type="button">說明</button>
     <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
@@ -224,6 +225,17 @@ $("help").onclick=function(){
   $("helpdlg").showModal();
 };
 $("help-close").onclick=function(){$("helpdlg").close()};
+// ===== 到訪人數（使用免費計數服務 Abacus；同一瀏覽器分頁只算一次，本機開啟只讀不加）=====
+(function(){
+  var API="https://abacus.jasoncameron.dev/",KEY="aemo-0304-hapi/visits",el=$("visits");
+  var online=/^https?:$/.test(location.protocol)&&location.hostname.indexOf("github.io")>=0,counted=false;
+  try{counted=sessionStorage.getItem("hapi-visited")==="1"}catch(e){}
+  var mode=(online&&!counted)?"hit/":"get/";
+  fetch(API+mode+KEY).then(function(r){return r.ok?r.json():{value:0}}).then(function(j){
+    el.textContent="到訪人數："+Number(j.value||0).toLocaleString();
+    if(mode==="hit/")try{sessionStorage.setItem("hapi-visited","1")}catch(e){}
+  }).catch(function(){el.textContent="到訪人數：—"});
+})();
 $("shop").onclick=function(){
   $("shop-title").textContent=DB.shopTitle||Store.shopTitle;
   $("shop-body").innerHTML=Store.helpHtml(DB.shop!=null?DB.shop:Store.shopText);
