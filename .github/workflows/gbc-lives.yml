@@ -1,0 +1,33 @@
+# 每天自動抓 ガールズバンドクライ 官網的 LIVE 資訊（TOGENASHI TOGEARI／Diamond Dust 用）
+# 結果放在 data 分支的 gbc-lives.json，網站從那裡讀取，不會動到 main 分支
+name: 更新 GBC 活動資料
+
+on:
+  schedule:
+    - cron: "17 21 * * *"   # 每天日本時間 06:17
+  workflow_dispatch:         # 也可以在 Actions 頁面手動執行
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 抓取資料
+        run: node scripts/gbc-lives.mjs
+      - name: 推到 data 分支
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir out && mv gbc-lives.json out/ && cd out
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gbc-lives.json
+          git commit -q -m "更新 GBC 活動資料"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" data
