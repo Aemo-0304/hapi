@@ -10,6 +10,7 @@
   <h1>法被圖鑑</h1>
   <div style="display:flex;gap:8px">
     <span class="iconbtn counter" id="visits" title="累計到訪人數（同一個瀏覽器分頁只算一次）">到訪人數：…</span>
+    <button class="iconbtn" id="livesbtn" type="button">近期演唱會</button>
     <button class="iconbtn" id="shop" type="button">二手平台推薦</button>
     <button class="iconbtn" id="help" type="button">更新日誌</button>
     <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
@@ -75,6 +76,10 @@
     <button class="reset" id="ex-close" type="button" style="margin:0;flex:1">關閉</button>
     <button class="close" id="ex-go" type="button" style="flex:2">產生並下載 PNG</button>
   </div>
+</dialog>
+<dialog id="livesdlg" aria-label="近期演唱會" class="livesdlg">
+  <section class="lives" id="lives"></section>
+  <button class="close" id="lives-close" type="button">關閉</button>
 </dialog>
 <dialog id="shopdlg" aria-labelledby="shop-title" style="max-width:440px">
   <h2 id="shop-title" style="margin:0 0 12px;font-size:20px">二手平台推薦</h2>
@@ -218,13 +223,15 @@ function render(){
     return true;
   });
   list.sort(function(a,b){return S.sort==="new"?b.date-a.date:S.sort==="old"?a.date-b.date:a.name.localeCompare(b.name,"zh-Hant")});
-  if(!list.length){main.innerHTML='<p class="empty">找不到符合的法被，試試減少篩選條件。</p>';return}
-  var h='<p class="count">共 '+list.length+' 件</p><div class="grid">';
+  var nx=S.group&&hasNext(S.group)?'<div class="nextlive" id="nextlive"></div>':'';
+  if(!list.length){main.innerHTML=nx+'<p class="empty">找不到符合的法被，試試減少篩選條件。</p>';if(nx)renderNext(S.group);return}
+  var h=nx+'<p class="count">共 '+list.length+' 件</p><div class="grid">';
   list.forEach(function(d){
     var pk=MINE.ids.indexOf(d.id)>=0;
     h+='<button class="item'+(pk?' picked':'')+'" type="button" data-id="'+d.id+'"><span class="pick" role="checkbox" tabindex="0" aria-checked="'+pk+'" aria-label="加入我的圖鑑" title="加入／移出我的圖鑑"></span>'+badge(d)+'<h3>'+esc(d.name)+'</h3><small>'+(mname(d)?esc(mname(d))+"・":"")+d.year+" 年 "+d.month+' 月</small></button>';
   });
   main.innerHTML=h+"</div>";
+  if(nx)renderNext(S.group);
   Array.prototype.forEach.call(main.querySelectorAll(".item"),function(b){b.onclick=function(e){
     if(e.target.classList.contains("pick")){togglePick(+b.dataset.id,b);return}
     openDlg(+b.dataset.id)}});
@@ -502,6 +509,95 @@ $("ex-go").onclick=function(){doExport().catch(function(e){$("ex-msg").textConte
 $("ex-close").onclick=function(){$("exdlg").close()};
 $("exdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 updateExportBtn();
+// ===== 近期演唱會（打開主頁時即時讀取 bang-dream.com 的公開資料，取最近 5 場「ライブ」）=====
+// ===== 團體最近活動（從 BanG Dream! 官網動態讀取）=====
+var ARTIST={"poppinparty":8,"afterglow":9,"pastelpalettes":10,"roselia":11,"hellohappyworld":12,"morfonica":13,"raiseasuilen":14,"mygo":15,"avemujica":16,"夢限大mewtype":17};
+var GBC={"togenashitogeari":"tgtg","diamonddust":"dd"};
+var GBC_URL="https://raw.githubusercontent.com/Aemo-0304/hapi/data/gbc-lives.json",GBC_P=null;
+var NEXT={};
+function gkey(gid){var g=GROUPS.filter(function(x){return x.id===gid})[0];return g?g.name.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]/g,""):""}
+function hasNext(gid){var k=gkey(gid);return !!(ARTIST[k]||GBC[k])}
+function loadGbc(key){
+  if(!GBC_P)GBC_P=fetch(GBC_URL,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).catch(function(e){GBC_P=null;throw e});
+  var today=todayStr();
+  return GBC_P.then(function(j){
+    var best=null;
+    (j.events||[]).forEach(function(e){
+      if((e.groups||[]).indexOf(key)<0)return;
+      (e.items||[]).forEach(function(it){
+        if(it.date>=today&&(!best||it.date<best.start))best={title:e.title,link:e.link,start:it.date,when:"",place:it.place||""};
+      });
+    });
+    return best;
+  }).catch(function(){return undefined});
+}
+function artistId(gid){return ARTIST[gkey(gid)]||0}
+function todayStr(){var n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")}
+function loadNext(aid){
+  if(NEXT[aid])return NEXT[aid];
+  var today=todayStr();
+  NEXT[aid]=fetch(LIVES_API+"events?tax_artist="+aid+"&per_page=50&_fields=title,link,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place")
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+    .then(function(j){
+      var up=j.map(function(e){var a=e.acf||{},d=a.cf_events_dates||{};
+        return {title:decodeHtml(e.title&&e.title.rendered||""),link:e.link,start:(d.cf_events_dates_start||"").slice(0,10),when:a.cf_events_schedule||"",place:a.cf_events_place||""}})
+        .filter(function(e){return e.start&&e.start>=today})
+        .sort(function(a,b){return a.start.localeCompare(b.start)});
+      return up[0]||null;
+    })
+    .catch(function(){delete NEXT[aid];return undefined});
+  return NEXT[aid];
+}
+function renderNext(gid){
+  var aid=artistId(gid),gk=GBC[gkey(gid)],box=$("nextlive");if(!box||!(aid||gk))return;
+  box.innerHTML='<span class="nl-tag">下一場活動</span><span class="nl-loading">讀取中…</span>';
+  (aid?loadNext(aid):loadGbc(gk)).then(function(e){
+    box=$("nextlive");if(!box||S.group!==gid)return;
+    if(e===undefined){box.remove();return}
+    if(!e){box.innerHTML='<span class="nl-tag">下一場活動</span><span class="nl-loading">官網目前沒有已公布的活動</span>';return}
+    var t=todayStr().split("-"),s=e.start.split("-");
+    var days=Math.round((Date.UTC(+s[0],s[1]-1,+s[2])-Date.UTC(+t[0],t[1]-1,+t[2]))/86400000);
+    box.innerHTML='<a href="'+esc(e.link)+'" target="_blank" rel="noopener">'
+      +'<div class="nl-count">'+(days===0?'<b>今天</b>':'倒數<b>'+days+'</b>天')+'</div>'
+      +'<div class="nl-info"><span class="nl-tag">下一場活動</span><h3>'+esc(e.title)+'</h3>'
+      +'<small>📅 '+esc(e.when||e.start.replace(/^(\d+)-0?(\d+)-0?(\d+)$/,"$1年$2月$3日"))+(e.place?'　📍 '+esc(e.place):'')+'</small></div></a>';
+  });
+}
+var LIVES=null,LIVES_ERR=false,LIVES_API="https://bang-dream.com/wp-json/wp/v2/";
+function decodeHtml(s){var t=document.createElement("textarea");t.innerHTML=s;return t.value}
+function loadLives(){
+  try{var c=JSON.parse(sessionStorage.getItem("hapi-lives4")||"null");if(c&&Date.now()-c.t<3600000){LIVES=c.d;return Promise.resolve()}}catch(e){}
+  var now=new Date(),today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  return fetch(LIVES_API+"events?tax_events=51&per_page=50&_fields=id,title,link,featured_media,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place,acf.cf_events_image")
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+    .then(function(j){
+      var up=j.map(function(e){var a=e.acf||{},d=a.cf_events_dates||{};
+        return {title:decodeHtml(e.title&&e.title.rendered||""),link:e.link,start:d.cf_events_dates_start||"",end:d.cf_events_dates_end||"",
+          when:a.cf_events_schedule||"",place:a.cf_events_place||"",img:a.cf_events_image||0,fm:e.featured_media||0}})
+        .filter(function(e){return e.start&&e.start.slice(0,10)>=today})
+        .sort(function(a,b){return a.start.localeCompare(b.start)}).slice(0,4);
+      var ids=[];up.forEach(function(e){if(e.img)ids.push(e.img);if(e.fm)ids.push(e.fm)});
+      return (ids.length?fetch(LIVES_API+"media?include="+ids.join(",")+"&per_page=20&_fields=id,source_url").then(function(r){return r.ok?r.json():[]}):Promise.resolve([]))
+        .then(function(m){var map={};m.forEach(function(x){map[x.id]=x.source_url});up.forEach(function(e){e.src=map[e.img]||map[e.fm]||""});
+          LIVES=up;try{sessionStorage.setItem("hapi-lives4",JSON.stringify({t:Date.now(),d:up}))}catch(e){}});
+    })
+    .catch(function(){LIVES_ERR=true});
+}
+function renderLives(){
+  var box=$("lives");if(!box)return;
+    var head='<div class="lives-head"><h2>近期演唱會</h2><a href="https://bang-dream.com/events/" target="_blank" rel="noopener">資料來源：BanG Dream! 官方網站 ›</a></div>';
+  if(LIVES_ERR){box.innerHTML=head+'<p class="lives-loading">暫時無法取得演唱會資訊，請點右上方連結到官網查看。</p>';return}
+  if(!LIVES){box.innerHTML=head+'<p class="lives-loading">載入中…</p>';return}
+  if(!LIVES.length){box.innerHTML=head+'<p class="lives-loading">目前沒有即將舉行的演唱會。</p>';return}
+  box.innerHTML=head+'<div class="lives-grid">'+LIVES.map(function(e){
+    return '<a class="live" href="'+esc(e.link)+'" target="_blank" rel="noopener">'
+      +'<div class="live-img">'+(e.src?'<img src="'+esc(e.src)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</div>'
+      +'<div class="live-body"><b class="live-date">'+esc(e.when||e.start.slice(0,10))+'</b><h3>'+esc(e.title)+'</h3>'+(e.place?'<small>📍 '+esc(e.place)+'</small>':'')+'</div></a>';
+  }).join("")+'</div>';
+}
+$("livesbtn").onclick=function(){LIVES_ERR=false;renderLives();$("livesdlg").showModal();if(!LIVES)loadLives().then(renderLives)};
+$("lives-close").onclick=function(){$("livesdlg").close()};
+$("livesdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 buildFilters();buildChips();render();
 </script>
 </body>
