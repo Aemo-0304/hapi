@@ -1,650 +1,1732 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫</title>
-<meta name="description" content="BanG Dream!（邦多利）法被圖鑑：收錄 Poppin'Party、Afterglow、Pastel*Palettes、Roselia、Hello, Happy World!、Morfonica、RAISE A SUILEN、MyGO!!!!!、Ave Mujica、夢限大みゅーたいぷ，以及 トゲナシトゲアリ、Diamond Dust 的演唱會法被（ハッピ）照片、官方售價與發售活動，可依樂團、角色篩選並匯出自己的收藏圖鑑。">
-<meta name="google-site-verification" content="Sszo54LSO_saCJkc9ENuyC2y8mzj0m0679ZRtMY-iH0">
-<link rel="canonical" href="https://aemo-0304.github.io/hapi/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&text=BanGDream!&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#e8498c">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="法被圖鑑">
-<meta property="og:title" content="BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫">
-<meta property="og:description" content="收錄 BanG Dream! 各樂團與 トゲナシトゲアリ 的演唱會法被照片、官方售價與發售活動，可依樂團、角色篩選並匯出收藏圖鑑。">
-<meta property="og:url" content="https://aemo-0304.github.io/hapi/">
-<meta property="og:image" content="https://aemo-0304.github.io/hapi/photos/logo_poppinparty.webp">
-<meta property="og:locale" content="zh_TW">
-<meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"BanG Dream! 法被圖鑑","alternateName":["法被圖鑑","邦多利法被圖鑑"],"url":"https://aemo-0304.github.io/hapi/","inLanguage":"zh-Hant"}</script>
-</head>
-<body>
-<header>
-  <h1 class="brand"><span class="brand-en">BanG Dream!</span><span class="brand-zh">法被圖鑑</span></h1>
-  <div style="display:flex;gap:8px">
-    <span class="iconbtn counter" id="visits" title="累計到訪人數（同一個瀏覽器分頁只算一次）">到訪人數：…</span>
-    <button class="iconbtn" id="livesbtn" type="button">近期演唱會</button>
-    <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
-  </div>
-  <link rel="stylesheet" type="text/css" href="HAPI.CSS"/>
-</header>
-
-<div class="bar">
-  <input type="search" id="q" placeholder="搜尋名稱、活動或法被…" aria-label="搜尋">
-  <select id="sort" aria-label="排序方式">
-    <option value="new">發售日期（新→舊）</option>
-    <option value="old">發售日期（舊→新）</option>
-    <option value="name">名稱（A→Z）</option>
-  </select>
-  <button class="btn-adv" id="adv" type="button" aria-haspopup="dialog">🔍 進階搜尋<span class="adv-n" id="adv-n" hidden></span></button>
-  <button class="btn-export" id="export" type="button">⬇ 匯出圖鑑</button>
-</div>
-<div class="chips" id="chips" role="group" aria-label="依團體篩選"></div>
-<div class="chips" id="members" role="group" aria-label="依角色篩選" style="display:none"></div>
-
-<div class="layout one">
-  <main id="main"></main>
-</div>
-<footer><a href="https://www.threads.com/@aemo_gbp?hl=zh-tw" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">聯繫我</a></footer>
-
-<dialog id="exdlg" aria-labelledby="ex-h" class="exdlg">
-  <h2 id="ex-h" style="margin:0 0 14px;font-size:20px">匯出圖鑑（PNG）</h2>
-  <div class="exform">
-    <fieldset><legend>要放哪些法被 <b id="ex-count"></b></legend>
-      <label class="row"><input type="radio" name="exr" id="ex-custom-r"> 依樂團／人物／活動挑選</label>
-      <div class="ex3" id="ex-custom">
-        <label>樂團<select id="ex-g"></select></label>
-        <label>人物<select id="ex-m"></select></label>
-        <label>活動<select id="ex-e"></select></label>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫</title>
+    <meta
+      name="description"
+      content="BanG Dream!（邦多利）法被圖鑑：收錄 Poppin'Party、Afterglow、Pastel*Palettes、Roselia、Hello, Happy World!、Morfonica、RAISE A SUILEN、MyGO!!!!!、Ave Mujica、夢限大みゅーたいぷ，以及 トゲナシトゲアリ、Diamond Dust 的演唱會法被（ハッピ）照片、官方售價與發售活動，可依樂團、角色篩選並匯出自己的收藏圖鑑。"
+    />
+    <meta name="google-site-verification" content="Sszo54LSO_saCJkc9ENuyC2y8mzj0m0679ZRtMY-iH0" />
+    <link rel="canonical" href="https://aemo-0304.github.io/hapi/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&text=BanGDream!&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap"
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#e8498c" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="法被圖鑑" />
+    <meta property="og:title" content="BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫" />
+    <meta
+      property="og:description"
+      content="收錄 BanG Dream! 各樂團與 トゲナシトゲアリ 的演唱會法被照片、官方售價與發售活動，可依樂團、角色篩選並匯出收藏圖鑑。"
+    />
+    <meta property="og:url" content="https://aemo-0304.github.io/hapi/" />
+    <meta property="og:image" content="https://aemo-0304.github.io/hapi/photos/logo_poppinparty.webp" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "BanG Dream! 法被圖鑑",
+        "alternateName": ["法被圖鑑", "邦多利法被圖鑑"],
+        "url": "https://aemo-0304.github.io/hapi/",
+        "inLanguage": "zh-Hant"
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1 class="brand"><span class="brand-en">BanG Dream!</span><span class="brand-zh">法被圖鑑</span></h1>
+      <div style="display: flex; gap: 8px">
+        <span class="iconbtn counter" id="visits" title="累計到訪人數（同一個瀏覽器分頁只算一次）"
+          >到訪人數：…</span
+        >
+        <button class="iconbtn" id="livesbtn" type="button">近期演唱會</button>
+        <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
       </div>
-      <label class="row"><input type="radio" name="exr" id="ex-mine"> <span id="ex-mine-lab">我勾選的</span></label>
-      <p class="exhint">在法被卡片右上角點「＋」可以自己挑選，勾選會記在這個瀏覽器裡。</p>
-    </fieldset>
-    <label>標題<input type="text" id="ex-title" maxlength="30"></label>
-    <label>副標題<input type="text" id="ex-sub" maxlength="40" placeholder="（可不填）"></label>
-    <div class="ex2">
-      <label>整理者<input type="text" id="ex-author" maxlength="30" placeholder="（可不填）"></label>
-      <label>社群帳號<input type="text" id="ex-social" maxlength="40" placeholder="Threads / IG …"></label>
-    </div>
-    <div class="ex2">
-      <label>每排件數<select id="ex-cols"><option>3</option><option>4</option><option selected>5</option></select></label>
-      <label>外框顏色<input type="color" id="ex-color" value="#f9d77e"></label>
-    </div>
-    <label class="row"><input type="checkbox" id="ex-price" checked> 顯示官方售價</label>
-    <details class="exnotes"><summary>每件的備註（已收、待收…）<span id="ex-notes-n"></span></summary>
-      <p class="exhint">填了的會用粉紅字印在價格下方，沒填就不顯示。</p>
-      <div id="ex-notes"></div>
-    </details>
-    <p class="exmsg" id="ex-msg" role="status"></p>
-  </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <button class="reset" id="ex-clear" type="button" style="margin:0;width:auto;padding:9px 14px">清空勾選</button>
-    <button class="reset" id="ex-close" type="button" style="margin:0;flex:1">關閉</button>
-    <button class="close" id="ex-go" type="button" style="flex:2">產生並下載 PNG</button>
-  </div>
-</dialog>
-<dialog id="advdlg" class="advdlg" aria-labelledby="adv-h">
-  <div class="adv-top"><h2 id="adv-h">進階搜尋</h2><button class="adv-sel" id="adv-all" type="button"><i class="ck"></i>全員選擇</button></div>
-  <div class="adv-body">
-    <div id="adv-chars"></div>
-  </div>
-  <div class="adv-foot">
-    <button class="adv-btn" id="adv-reset" type="button">清除條件</button>
-    <button class="adv-btn" id="adv-cancel" type="button">取消</button>
-    <button class="adv-btn ok" id="adv-ok" type="button">確定</button>
-  </div>
-</dialog>
-<dialog id="livesdlg" aria-label="近期演唱會" class="livesdlg">
-  <section class="lives" id="lives"></section>
-  <button class="close" id="lives-close" type="button">關閉</button>
-</dialog>
-<div class="fab-panel" id="fabpanel" role="dialog" aria-label="二手平台推薦與更新日誌" hidden>
-  <div class="fab-tabs" role="tablist">
-    <button type="button" role="tab" class="fab-tab" id="tab-shop" data-tab="shop">🛍️ <span id="shop-title">二手平台推薦</span></button>
-    <button type="button" role="tab" class="fab-tab" id="tab-help" data-tab="help">📕 <span id="help-title">更新日誌</span></button>
-  </div>
-  <div class="fab-body helpbody" id="fab-body"></div>
-</div>
-<button type="button" class="fab" id="fab" aria-expanded="false" aria-controls="fabpanel" title="二手平台推薦／更新日誌"><img class="fab-ico" src="photos/fab_avatar.webp?v=3" alt=""><span class="fab-x">✕</span></button>
-<dialog id="dlg" aria-labelledby="d-name">
-  <div class="d-img"><div id="d-img"></div><button class="d-x" id="dlg-close" type="button" aria-label="關閉">✕</button></div>
-  <div class="d-body">
-    <div class="d-tags" id="d-tags"></div>
-    <h2 id="d-name"></h2>
-    <div class="d-fields" id="d-fields"></div>
-    <button type="button" class="d-pick" id="d-pick"></button>
-    <div class="d-nav">
-      <button type="button" id="d-prev">‹ 上一個</button>
-      <span id="d-pos"></span>
-      <button type="button" id="d-next">下一個 ›</button>
-    </div>
-  </div>
-</dialog>
+      <link rel="stylesheet" type="text/css" href="HAPI.CSS?v=20261116" />
+    </header>
 
-<script src="db.js"></script>
-<script src="data.js"></script>
-<script>
-// ===== 資料（由 data.js 載入，可在後台 admin.html 編輯）=====
-var DB=Store.load();
-var GROUPS=DB.groups, PLACES=DB.places;
-var DATA=DB.items.filter(function(d){return GROUPS.some(function(g){return g.id===d.group})});
-DATA.forEach(function(d){d.hue=GROUPS.filter(function(g){return g.id===d.group})[0].hue;d.date=d.year*100+d.month});
+    <div class="bar">
+      <input type="search" id="q" placeholder="搜尋名稱、活動或法被…" aria-label="搜尋" />
+      <select id="sort" aria-label="排序方式">
+        <option value="new">發售日期（新→舊）</option>
+        <option value="old">發售日期（舊→新）</option>
+        <option value="name">名稱（A→Z）</option>
+      </select>
+      <button class="btn-adv" id="adv" type="button" aria-haspopup="dialog">
+        🔍 進階搜尋<span class="adv-n" id="adv-n" hidden></span>
+      </button>
+      <button class="btn-export" id="export" type="button">⬇ 匯出圖鑑</button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="依團體篩選"></div>
+    <div class="chips" id="members" role="group" aria-label="依角色篩選" style="display: none"></div>
 
-// ===== 狀態 =====
-var S={q:"",group:null,member:null,year:{},place:{},chars:{},sort:"new"};
-var $=function(id){return document.getElementById(id)};
-function gname(id){return GROUPS.filter(function(g){return g.id===id})[0].name}
-function gobj(id){return GROUPS.filter(function(g){return g.id===id})[0]}
-function mname(d){
-  if(!d.member)return "";
-  var g=gobj(d.group);
-  if(d.member==="all")return g.name+"全團";
-  var m=(g.members||[]).filter(function(m){return m.id===d.member})[0];
-  return m?m.name:"";
-}
-function setGroup(id){S.group=id;S.member=null;buildChips();render()}
-function buildMembers(){
-  var box=$("members"),g=S.group&&gobj(S.group);
-  if(!g||!g.members||!g.members.length){box.style.display="none";box.innerHTML="";return}
-  box.style.display="";
-  box.innerHTML='<span style="align-self:center;color:var(--muted);font-size:14px">角色</span>';
-  [{id:"all",name:g.name+"全團",color:"hsl("+g.hue+" 80% 55%)"}].concat(g.members).forEach(function(m){
-    var n=DATA.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
-    var b=document.createElement("button");b.type="button";b.className="chip";
-    b.setAttribute("aria-pressed",S.member===m.id);
-    b.innerHTML='<i style="background:'+m.color+'"></i>'+esc(m.name)+' <small>'+n+'</small>';
-    b.onclick=function(){S.member=S.member===m.id?null:m.id;buildMembers();render()};
-    box.appendChild(b);
-  });
-}
+    <div class="layout one">
+      <main id="main"></main>
+    </div>
+    <footer>
+      <a
+        href="https://www.threads.com/@aemo_gbp?hl=zh-tw"
+        target="_blank"
+        rel="noopener"
+        style="color: var(--accent); font-weight: 700"
+        >聯繫我</a
+      >
+    </footer>
 
-// ===== 進階搜尋（角色／年份／地點，按「確定」才套用）=====
-var T=null,ADV_SHORT={"TOGENASHI TOGEARI":"TOGENASHI"}; // 進階搜尋團名欄位太窄時用的短名
-function cp(o){var r={};for(var k in o)r[k]=1;return r}
-function charGroups(){return GROUPS.filter(function(g){return g.members&&g.members.length})}
-function allCharKeys(){var ks=[];charGroups().forEach(function(g){ks.push(g.id+":all");g.members.forEach(function(m){ks.push(g.id+":"+m.id)})});return ks}
-function shortName(n){return n.replace(/^「[^」]*」/,"").split("／")[0].trim()}
-function buildFilters(){
-  var n=Object.keys(S.chars).filter(function(k){return !/:all$/.test(k)}).length;
-  var b=$("adv-n");b.hidden=!n;b.textContent=n;
-  if($("advdlg").open)buildAdv();
-}
-function ck(on){return '<i class="ck'+(on?' on':'')+'"></i>'}
-function buildAdv(){
-  var html="";
-  charGroups().forEach(function(g){
-    var tiles=g.members;
-    var keys=[g.id+":all"].concat(tiles.map(function(m){return g.id+":"+m.id}));
-    var allOn=keys.every(function(k){return T.chars[k]});
-    html+='<div class="adv-row"><div class="adv-g"><b>'+(g.icon?'<img class="adv-gi" src="'+esc(g.icon)+'" alt="">':'')+'<span title="'+esc(g.name)+'">'+esc(ADV_SHORT[g.name]||g.name)+'</span></b><button type="button" class="adv-sel" data-gall="'+g.id+'">'+ck(allOn)+'全選</button></div><div class="adv-ms">';
-    tiles.forEach(function(m){
-      var k=g.id+":"+m.id,on=!!T.chars[k],n=DATA.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
-      var av=m.avatar?'<img src="'+esc(m.avatar)+'" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\''+esc(shortName(m.name)).charAt(0)+'\'))">':esc(shortName(m.name).charAt(0));
-      html+='<button type="button" class="adv-m'+(on?' on':'')+(n?'':' zero')+'" data-k="'+esc(k)+'" aria-pressed="'+on+'" title="'+esc(m.name)+'（'+n+' 件）">'+ck(on)
-        +'<span class="av'+(m.avatar?' img':'')+'" style="--c:'+esc(m.color)+'">'+av+'</span><span class="nm">'+esc(shortName(m.name))+'</span></button>';
-    });
-    html+='</div></div>';
-  });
-  $("adv-chars").innerHTML=html||'<p class="adv-empty">尚未設定團員，可到後台新增</p>';
-  var ks=allCharKeys();$("adv-all").innerHTML=ck(ks.length&&ks.every(function(k){return T.chars[k]}))+"全員選擇";
-}
-$("adv").onclick=function(){T={chars:cp(S.chars),year:cp(S.year),place:cp(S.place)};buildAdv();$("advdlg").showModal()};
-$("advdlg").addEventListener("click",function(e){
-  if(e.target===this){this.close();return}
-  var t=e.target.closest("button");if(!t)return;
-  if(t.dataset.k){var k=t.dataset.k;if(T.chars[k])delete T.chars[k];else T.chars[k]=1;
-    // 全團法被：該團成員全部勾選時自動包含
-    var gid=k.split(":")[0],gg=GROUPS.filter(function(x){return x.id===gid})[0];
-    if(gg.members.every(function(m){return T.chars[gid+":"+m.id]}))T.chars[gid+":all"]=1;else delete T.chars[gid+":all"]}
-  else if(t.dataset.gall){var g=GROUPS.filter(function(x){return x.id===t.dataset.gall})[0],ks=[g.id+":all"].concat(g.members.map(function(m){return g.id+":"+m.id}));
-    var on=ks.every(function(k){return T.chars[k]});ks.forEach(function(k){if(on)delete T.chars[k];else T.chars[k]=1})}
-  else if(t.id==="adv-all"){var ks=allCharKeys(),on=ks.every(function(k){return T.chars[k]});ks.forEach(function(k){if(on)delete T.chars[k];else T.chars[k]=1})}
-  else if(t.id==="adv-reset"){T={chars:{},year:{},place:{}}}
-  else if(t.id==="adv-cancel"){this.close();return}
-  else if(t.id==="adv-ok"){
-    var ks=allCharKeys();if(ks.length&&ks.every(function(k){return T.chars[k]}))T.chars={}; // 全選等於不篩選
-    S.chars=T.chars;S.year=T.year;S.place=T.place;this.close();buildFilters();render();return}
-  else return;
-  buildAdv();
-});
-function buildChips(){
-  var box=$("chips");box.innerHTML="";
-  GROUPS.forEach(function(g){
-    var n=DATA.filter(function(d){return d.group===g.id}).length;
-    var b=document.createElement("button");b.type="button";b.className="chip";
-    b.setAttribute("aria-pressed",S.group===g.id);
-    b.innerHTML=(g.icon?'<img class="chip-icon" src="'+esc(g.icon)+'" alt="">':'<i style="background:hsl('+g.hue+' 80% 55%)"></i>')+esc(g.name)+' <small>'+n+'</small>';
-    b.onclick=function(){setGroup(S.group===g.id?null:g.id)};
-    box.appendChild(b);
-  });
-  buildMembers();
-}
-function has(o){return Object.keys(o).length>0}
-function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function badge(d){
-  if(d.photo)return '<img class="coat" style="object-fit:cover;border-radius:10px" src="'+esc(d.photo)+'" alt="" onerror="this.style.visibility=\'hidden\'">';
-  var c="hsl("+d.hue+" 70% 42%)";
-  var extra='';
-  return '<svg class="coat" viewBox="0 0 100 100" aria-hidden="true"><path d="M10 22L38 14L50 24L62 14L90 22L98 52L80 56L78 90L22 90L20 56L2 52Z" fill="'+c+'" stroke="#0003"/>'+extra+'<path d="M38 14L50 26L50 90L44 90L44 30L34 16Z" fill="#fff"/><path d="M62 14L50 26L50 90L56 90L56 30L66 16Z" fill="#fff"/></svg>';
-}
-function render(){
-  var q=S.q.trim().toLowerCase();
-  var active=q||S.group||has(S.year)||has(S.place)||has(S.chars);
-  var main=$("main");
-  if(!active){
-    var h='<div class="hint"><h2>點選團體，開始翻閱圖鑑</h2><p>也可以用搜尋或「進階搜尋」直接找</p></div><div class="groups">';
-    GROUPS.forEach(function(g){
-      var n=DATA.filter(function(d){return d.group===g.id}).length;
-      h+='<button class="gcard" type="button" style="--c:hsl('+g.hue+' 80% 55%)" data-g="'+g.id+'">'+(g.logo?'<img class="glogo" src="'+esc(g.logo)+'" alt="'+esc(g.name)+'" onerror="this.nextSibling.hidden=false;this.remove()"><b hidden>':'<b>')+esc(g.name)+'</b><small>'+n+' 件</small></button>';
-    });
-    main.innerHTML=h+"</div>";
-    Array.prototype.forEach.call(main.querySelectorAll(".gcard"),function(b){
-      b.onclick=function(){setGroup(b.dataset.g)};
-    });
-    return;
-  }
-  var list=CUR=DATA.filter(function(d){
-    if(S.group&&d.group!==S.group)return false;
-    if(S.member&&d.member!==S.member)return false;
-    if(has(S.chars)&&!S.chars[d.group+":"+d.member])return false;
-    if(has(S.year)&&!S.year[d.year])return false;
-    if(has(S.place)&&!S.place[d.place])return false;
-    if(q&&(d.name+d.event+d.place+mname(d)).toLowerCase().indexOf(q)<0)return false;
-    return true;
-  });
-  list.sort(function(a,b){return S.sort==="new"?b.date-a.date:S.sort==="old"?a.date-b.date:a.name.localeCompare(b.name,"zh-Hant")});
-  var nx=S.group&&hasNext(S.group)?'<div class="nextlive" id="nextlive"></div>':'';
-  if(!list.length){main.innerHTML=nx+'<p class="empty">找不到符合的法被，試試減少篩選條件。</p>';if(nx)renderNext(S.group);return}
-  var h=nx+'<p class="count">共 '+list.length+' 件</p><div class="grid">';
-  list.forEach(function(d){
-    var pk=MINE.ids.indexOf(d.id)>=0;
-    h+='<button class="item'+(pk?' picked':'')+'" type="button" data-id="'+d.id+'"><span class="pick" role="checkbox" tabindex="0" aria-checked="'+pk+'" aria-label="加入我的圖鑑" title="加入／移出我的圖鑑"></span>'+badge(d)+'<h3>'+esc(d.name)+'</h3><small>'+(mname(d)?esc(mname(d))+"・":"")+d.year+" 年 "+d.month+' 月</small></button>';
-  });
-  main.innerHTML=h+"</div>";
-  if(nx)renderNext(S.group);
-  Array.prototype.forEach.call(main.querySelectorAll(".item"),function(b){b.onclick=function(e){
-    if(e.target.classList.contains("pick")){togglePick(+b.dataset.id,b);return}
-    openDlg(+b.dataset.id)}});
-  Array.prototype.forEach.call(main.querySelectorAll(".pick"),function(p){p.onkeydown=function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();togglePick(+p.parentNode.dataset.id,p.parentNode)}}});
-}
-// ===== 詳細資訊（放大檢視，可上一個／下一個翻頁）=====
-var CUR=[],curId=null;
-function mcolor(d){
-  var g=gobj(d.group);if(d.member==="all")return "hsl("+g.hue+" 80% 55%)";
-  var m=(g.members||[]).filter(function(m){return m.id===d.member})[0];return m?m.color:"";
-}
-function field(label,val,full){return val?'<div'+(full?' class="full"':'')+'><label>'+label+'</label><span>'+esc(val)+'</span></div>':""}
-function openDlg(id){
-  var d=DATA.filter(function(x){return x.id===id})[0];curId=id;
-  var gc="hsl("+d.hue+" 75% 45%)";
-  var box=$("d-img");box.innerHTML="";
-  if(d.photo){
-    var im=new Image();im.src=d.photo;im.alt=d.name;
-    im.onerror=function(){box.innerHTML=badge({hue:d.hue})};
-    box.appendChild(im);
-  }else box.innerHTML=badge({hue:d.hue});
-  $("d-tags").innerHTML='<span class="d-tag" style="--c:'+gc+'">'+esc(gname(d.group))+'</span>'
-    +(mname(d)?'<span class="d-tag" style="--c:'+mcolor(d)+'">'+esc(mname(d))+'</span>':'');
-  $("d-name").textContent=d.name;
-  $("d-fields").innerHTML=field("發售日期",d.year+" 年 "+d.month+" 月")+field("販售地點",d.place)+(d.currency==="NA"?field("官方售價","-"):d.price?field("官方售價",d.currency==="CNY"?"人民幣 "+Number(d.price).toLocaleString()+" 元":"¥"+Number(d.price).toLocaleString()+"（日圓・含稅）"):"")+field("活動／商品",d.event,true);
-  var i=CUR.indexOf(d);
-  $("d-pos").textContent=i>=0?(i+1)+" / "+CUR.length:"";
-  $("d-prev").disabled=i<=0;$("d-next").disabled=i<0||i>=CUR.length-1;
-  var on=MINE.ids.indexOf(id)>=0;$("d-pick").textContent=on?"✓ 已加入我的圖鑑（點一下移除）":"＋ 加入我的圖鑑";$("d-pick").classList.toggle("on",on);
-  if(!$("dlg").open)$("dlg").showModal();
-}
-function navDlg(n){var i=CUR.findIndex(function(d){return d.id===curId})+n;if(i>=0&&i<CUR.length)openDlg(CUR[i].id)}
-$("d-prev").onclick=function(){navDlg(-1)};
-$("d-pick").onclick=function(){var card=document.querySelector('.item[data-id="'+curId+'"]');togglePick(curId,card);openDlg(curId)};
-$("d-next").onclick=function(){navDlg(1)};
-document.addEventListener("keydown",function(e){if(!$("dlg").open)return;if(e.key==="ArrowLeft")navDlg(-1);if(e.key==="ArrowRight")navDlg(1)});
-$("dlg-close").onclick=function(){$("dlg").close()};
-// ===== 到訪人數（使用免費計數服務 Abacus；同一瀏覽器分頁只算一次，本機開啟只讀不加）=====
-(function(){
-  var API="https://abacus.jasoncameron.dev/",KEY="aemo-0304-hapi/visits",el=$("visits");
-  var online=/^https?:$/.test(location.protocol)&&location.hostname.indexOf("github.io")>=0,counted=false;
-  try{counted=sessionStorage.getItem("hapi-visited")==="1"}catch(e){}
-  var mode=(online&&!counted)?"hit/":"get/";
-  fetch(API+mode+KEY).then(function(r){return r.ok?r.json():{value:0}}).then(function(j){
-    el.textContent="到訪人數："+Number(j.value||0).toLocaleString();
-    if(mode==="hit/")try{sessionStorage.setItem("hapi-visited","1")}catch(e){}
-  }).catch(function(){el.textContent="到訪人數：—"});
-})();
-// ===== 右下角小圓點：二手平台推薦／更新日誌 =====
-var FAB_TAB="shop";
-function fabShow(tab){
-  FAB_TAB=tab;
-  $("shop-title").textContent=DB.shopTitle||Store.shopTitle;
-  $("help-title").textContent=DB.helpTitle||Store.helpTitle;
-  ["shop","help"].forEach(function(t){var b=$("tab-"+t);b.classList.toggle("on",t===tab);b.setAttribute("aria-selected",t===tab)});
-  $("fab-body").innerHTML=tab==="shop"?Store.helpHtml(DB.shop!=null?DB.shop:Store.shopText):Store.helpHtml(DB.help!=null?DB.help:Store.helpText);
-  $("fab-body").scrollTop=0;
-}
-function fabToggle(open){
-  var p=$("fabpanel");if(open==null)open=p.hidden;
-  if(open){fabShow(FAB_TAB);p.hidden=false;requestAnimationFrame(function(){p.classList.add("show")})}
-  else{p.classList.remove("show");setTimeout(function(){if(!p.classList.contains("show"))p.hidden=true},180)}
-  $("fab").classList.toggle("open",open);$("fab").setAttribute("aria-expanded",open);
-}
-$("fab").onclick=function(){fabToggle()};
-$("tab-shop").onclick=function(){fabShow("shop")};
-$("tab-help").onclick=function(){fabShow("help")};
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("fabpanel").hidden)fabToggle(false)});
-document.addEventListener("click",function(e){if(!$("fabpanel").hidden&&!e.target.closest("#fabpanel,#fab"))fabToggle(false)});
-$("dlg").addEventListener("click",function(e){if(e.target===this)this.close()});
-$("q").oninput=function(){S.q=this.value;render()};
-$("sort").onchange=function(){S.sort=this.value;render()};
-$("theme").onclick=function(){
-  var root=document.documentElement,dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);
-  root.setAttribute("data-theme",dark?"light":"dark");this.textContent=dark?"🌙":"☀️";
-};
-// ===== 匯出圖鑑 PNG（可依樂團／人物／活動挑選，或用卡片上的「＋」勾選；設定記在訪客自己的瀏覽器）=====
-var MKEY="hapi-mine-v1";
-var MINE=(function(){var m=null;try{m=JSON.parse(localStorage.getItem(MKEY)||"null")}catch(e){}
-  m=m||{};m.ids=(m.ids||[]).filter(function(id){return DATA.some(function(d){return d.id===id})});m.notes=m.notes||{};return m})();
-function saveMine(){try{localStorage.setItem(MKEY,JSON.stringify(MINE))}catch(e){}updateExportBtn()}
-function updateExportBtn(){$("export").textContent="⬇ 匯出圖鑑"+(MINE.ids.length?"（已勾 "+MINE.ids.length+"）":"")}
-function togglePick(id,card){
-  var i=MINE.ids.indexOf(id);if(i>=0)MINE.ids.splice(i,1);else MINE.ids.push(id);
-  var on=i<0;if(card){card.classList.toggle("picked",on);var p=card.querySelector(".pick");if(p)p.setAttribute("aria-checked",on)}
-  saveMine();
-}
-function sortList(list){return list.sort(function(a,b){return S.sort==="new"?b.date-a.date:S.sort==="old"?a.date-b.date:a.name.localeCompare(b.name,"zh-Hant")})}
-function memberLabel(g,mid){if(mid==="all")return g.name+"全團";var m=(g.members||[]).filter(function(m){return m.id===mid})[0];return m?m.name:""}
-function opt(v,t,sel){return '<option value="'+esc(v)+'"'+(sel?" selected":"")+'>'+esc(t)+'</option>'}
-// 依目前選的樂團，更新「人物」選單
-function fillMembersSel(cur){
-  var gid=$("ex-g").value,h=opt("","全部人物",!cur);
-  GROUPS.forEach(function(g){
-    if(gid&&g.id!==gid)return;if(!g.members||!g.members.length)return;
-    [{id:"all"}].concat(g.members).forEach(function(m){
-      var v=g.id+":"+m.id,n=DATA.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
-      if(n)h+=opt(v,memberLabel(g,m.id)+(gid?"":"（"+g.name+"）")+"　"+n+" 件",v===cur);
-    });
-  });
-  $("ex-m").innerHTML=h;$("ex-m").disabled=$("ex-m").options.length<2;
-}
-function fillEventsSel(cur){
-  var gid=$("ex-g").value,mv=$("ex-m").value,c={};
-  DATA.forEach(function(d){if(gid&&d.group!==gid)return;if(mv&&d.group+":"+d.member!==mv)return;if(d.event)c[d.event]=(c[d.event]||0)+1});
-  var h=opt("","全部活動",!cur);
-  Object.keys(c).sort().forEach(function(e){h+=opt(e,e+"　"+c[e]+" 件",e===cur)});
-  $("ex-e").innerHTML=h;
-}
-function exMode(){return $("ex-mine").checked?"mine":"custom"}
-function exList(){
-  if(exMode()==="mine")return sortList(DATA.filter(function(d){return MINE.ids.indexOf(d.id)>=0}));
-  var gid=$("ex-g").value,mv=$("ex-m").value,ev=$("ex-e").value;
-  return sortList(DATA.filter(function(d){
-    if(gid&&d.group!==gid)return false;
-    if(mv&&d.group+":"+d.member!==mv)return false;
-    if(ev&&d.event!==ev)return false;
-    return true;
-  }));
-}
-function autoTitle(){
-  if(exMode()==="mine")return "我的法被圖鑑";
-  var gid=$("ex-g").value,mv=$("ex-m").value,ev=$("ex-e").value,p=[];
-  if(mv){var a=mv.split(":");p.push(memberLabel(gobj(a[0]),a[1]))}else if(gid)p.push(gname(gid));
-  return (p.length?p[0]+" ":"")+"法被圖鑑";
-}
-function autoSub(){return exMode()==="custom"&&$("ex-e").value?$("ex-e").value:""}
-var titleTouched=false,subTouched=false;
-function exRefresh(){
-  var n=exList().length;
-  $("ex-count").textContent="共 "+n+" 件";
-  $("ex-custom").style.display=exMode()==="custom"?"":"none";
-  if(!titleTouched)$("ex-title").value=autoTitle();
-  if(!subTouched)$("ex-sub").value=autoSub();
-  renderNotes();$("ex-go").disabled=!n;
-}
-function renderNotes(){
-  var list=exList();
-  $("ex-notes-n").textContent="（"+list.length+" 件）";
-  $("ex-notes").innerHTML=list.map(function(d){
-    return '<label class="exnote"><span>'+esc(d.name)+'</span><input type="text" maxlength="20" data-nid="'+d.id+'" value="'+esc(MINE.notes[d.id]||"")+'" placeholder="例如 已收、待收"></label>';
-  }).join("")||'<p class="exhint">目前沒有法被。</p>';
-}
-$("ex-notes").addEventListener("input",function(e){var id=e.target.dataset.nid;if(!id)return;var v=e.target.value.trim();if(v)MINE.notes[id]=v;else delete MINE.notes[id];saveMine()});
-function openExport(){
-  var groups=GROUPS.filter(function(g){return DATA.some(function(d){return d.group===g.id})});
-  $("ex-g").innerHTML=opt("","全部樂團",!S.group)+groups.map(function(g){return opt(g.id,g.name,g.id===S.group)}).join("");
-  fillMembersSel(S.group&&S.member?S.group+":"+S.member:"");fillEventsSel("");
-  $("ex-mine-lab").textContent="我勾選的（"+MINE.ids.length+" 件）";$("ex-mine").disabled=!MINE.ids.length;
-  $("ex-custom-r").checked=true;
-  titleTouched=false;subTouched=false;
-  $("ex-author").value=MINE.author||"";$("ex-social").value=MINE.social||"";
-  if(MINE.cols)$("ex-cols").value=Math.min(5,MINE.cols);if(MINE.color)$("ex-color").value=MINE.color;
-  $("ex-price").checked=MINE.showPrice!==false;
-  $("ex-msg").textContent=location.protocol==="file:"?"⚠ 目前是在電腦上直接打開檔案，瀏覽器不允許把照片放進 PNG，匯出會用法被圖示代替。上傳到網站（GitHub Pages）後匯出就會有照片。":"";exRefresh();
-  $("exdlg").showModal();
-}
-$("ex-g").onchange=function(){fillMembersSel("");fillEventsSel("");exRefresh()};
-$("ex-m").onchange=function(){fillEventsSel($("ex-e").value);exRefresh()};
-$("ex-e").onchange=exRefresh;
-$("ex-mine").onchange=exRefresh;$("ex-custom-r").onchange=exRefresh;
-$("ex-title").oninput=function(){titleTouched=true};$("ex-sub").oninput=function(){subTouched=true};
-$("ex-clear").onclick=function(){if(!MINE.ids.length)return;if(!confirm("清空所有勾選？（備註會保留）"))return;MINE.ids=[];saveMine();render();openExport()};
-function loadImg(src,cors){return new Promise(function(res){
-  var im=new Image(),done=false;if(cors)im.crossOrigin="anonymous";
-  var t=setTimeout(function(){if(!done){done=true;res(null)}},15000);
-  im.onload=function(){if(!done){done=true;clearTimeout(t);res(im)}};
-  im.onerror=function(){if(!done){done=true;clearTimeout(t);res(null)}};
-  im.src=src;
-})}
-// 確認圖片能放進畫布（跨網站圖片若對方不允許，PNG 會無法存檔）
-function safeImg(im){try{var c=document.createElement("canvas");c.width=c.height=2;var x=c.getContext("2d");x.drawImage(im,0,0,2,2);x.getImageData(0,0,1,1);return true}catch(e){return false}}
-function getImg(d){
-  if(!d.photo)return Promise.resolve(null);
-  var local=!/^https?:/i.test(d.photo)||d.photo.indexOf(location.origin)===0;
-  return loadImg(d.photo,!local).then(function(im){
-    if(im&&safeImg(im))return im;
-    if(local)return null;
-    return loadImg("https://wsrv.nl/?url="+encodeURIComponent(d.photo)+"&w=400&h=400&fit=inside",true).then(function(i2){return i2&&safeImg(i2)?i2:null});
-  });
-}
-var COAT=new Path2D("M10 22L38 14L50 24L62 14L90 22L98 52L80 56L78 90L22 90L20 56L2 52Z"),COATL=new Path2D("M38 14L50 26L50 90L44 90L44 30L34 16Z"),COATR=new Path2D("M62 14L50 26L50 90L56 90L56 30L66 16Z");
-function drawCoat(x,cx,cy,size,hue){
-  x.save();x.translate(cx-size/2,cy-size/2);x.scale(size/100,size/100);
-  x.fillStyle="hsl("+hue+",70%,42%)";x.fill(COAT);x.strokeStyle="rgba(0,0,0,.2)";x.stroke(COAT);x.fillStyle="#fff";x.fill(COATL);x.fill(COATR);x.restore();
-}
-function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
-function wrap(x,text,maxW,maxLines){
-  var lines=[],cur="",i;
-  for(i=0;i<text.length;i++){var t=cur+text[i];if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=text[i];if(lines.length===maxLines)break}else cur=t}
-  if(lines.length<maxLines){if(cur)lines.push(cur)}
-  else if(i<text.length){var l=lines[maxLines-1];while(l&&x.measureText(l+"…").width>maxW)l=l.slice(0,-1);lines[maxLines-1]=l+"…"}
-  return lines;
-}
-function priceText(d){
-  if(d.currency==="NA")return "-";
-  if(!d.price)return "";
-  return d.currency==="CNY"?"人民幣 "+Number(d.price).toLocaleString()+" 元":"¥"+Number(d.price).toLocaleString();
-}
-// 三角旗：沿一條下垂的繩子排小旗子
-function bunting(x,x0,y0,x1,y1,n){
-  var cols=["#ff9cc8","#8fd3f4","#ffd166","#a8e6a1","#c9a7ff"];
-  var mx=(x0+x1)/2,my=Math.max(y0,y1)+26;
-  x.strokeStyle="#6b5a4e";x.lineWidth=1.5;x.beginPath();x.moveTo(x0,y0);x.quadraticCurveTo(mx,my,x1,y1);x.stroke();
-  for(var i=0;i<n;i++){
-    var t=(i+.5)/n,px=(1-t)*(1-t)*x0+2*(1-t)*t*mx+t*t*x1,py=(1-t)*(1-t)*y0+2*(1-t)*t*my+t*t*y1;
-    var dx=2*(1-t)*(mx-x0)+2*t*(x1-mx),dy=2*(1-t)*(my-y0)+2*t*(y1-my),len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,w=11;
-    x.fillStyle=cols[i%cols.length];x.beginPath();x.moveTo(px-ux*w,py-uy*w);x.lineTo(px+ux*w,py+uy*w);x.lineTo(px-uy*22,py+ux*22);x.closePath();x.fill();
-  }
-}
-async function doExport(){
-  var list=exList();if(!list.length){$("ex-msg").textContent="沒有可以匯出的法被。";return}
-  var cols=Math.min(5,+$("ex-cols").value),color=$("ex-color").value,showPrice=$("ex-price").checked;
-  var title=$("ex-title").value.trim()||"法被圖鑑",sub=$("ex-sub").value.trim(),author=$("ex-author").value.trim(),social=$("ex-social").value.trim();
-  MINE.author=author;MINE.social=social;MINE.cols=cols;MINE.color=color;MINE.showPrice=showPrice;saveMine();
-  $("ex-go").disabled=true;
-  var FONT='"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif';
-  var imgs={},bad=0,done=0,withPhoto=list.filter(function(d){return d.photo}).length;
-  await Promise.all(list.map(function(d){
-    if(!d.photo)return null;
-    return getImg(d).then(function(im){if(im)imgs[d.id]=im;else bad++;$("ex-msg").textContent="載入照片中… "+(++done)+" / "+withPhoto});
-  }));
-  // 全部法被屬於同一個樂團時，在標題下方放該樂團 LOGO
-  var gset={};list.forEach(function(d){gset[d.group]=1});var gids=Object.keys(gset),bandLogo=null;
-  if(gids.length===1){var lg=gobj(gids[0]);if(lg&&lg.logo){var li=await loadImg(lg.logo,/^https?:/i.test(lg.logo)&&lg.logo.indexOf(location.origin)!==0);if(li&&safeImg(li))bandLogo=li}}
-  // 先把匯出會用到的字全部載入 Noto Sans TC，避免部分字退回系統字體造成字型不一致
-  $("ex-msg").textContent="載入字型中…";
-  var allText=title+sub+author+social+"整理者：官方售價（日圓・含稅）共件*資料來源：匯出日期法被圖鑑0123456789/-¥円元"+location.host+location.pathname;
-  list.forEach(function(d){allText+=d.name+(MINE.notes[d.id]||"")+(priceText(d)||"")});
-  try{await Promise.race([Promise.all(["400 13px","700 13px"].map(function(w){return document.fonts.load(w+' "Noto Sans TC"',allText)})),new Promise(function(r){setTimeout(r,6000)})])}catch(e){}
-  $("ex-msg").textContent="產生圖片中…";
-  var hasPrice=showPrice&&list.some(function(d){return priceText(d)}),hasNote=list.some(function(d){return MINE.notes[d.id]});
-  var SC=2,FR=26,IN=30,CW=180,IMG=158,GX=14,GY=24,NAME=36,PR=hasPrice?22:0,NT=hasNote?20:0,CH=IMG+10+NAME+PR+NT,LOGO_H=bandLogo?78:0,HEAD=210+LOGO_H,FOOT=56;
-  var gridW=cols*CW+(cols-1)*GX,W=Math.max(FR*2+IN*2+gridW,620);
-  var gx0=(W-gridW)/2;
-  var maxRows=Math.max(1,Math.floor((15000-HEAD-FOOT-FR*2)/(CH+GY))),rows=Math.ceil(list.length/cols),pages=Math.ceil(rows/maxRows);
-  var now=new Date(),ds=now.getFullYear()+"/"+(now.getMonth()+1)+"/"+now.getDate();
-  var ink="#3a2e28",soft="#8a7a6e";
-  for(var p=0;p<pages;p++){
-    var part=list.slice(p*maxRows*cols,(p+1)*maxRows*cols),r=Math.ceil(part.length/cols);
-    var H=FR*2+HEAD+r*CH+(r-1)*GY+FOOT;
-    var c=document.createElement("canvas");c.width=W*SC;c.height=H*SC;var x=c.getContext("2d");x.scale(SC,SC);x.textBaseline="top";
-    x.fillStyle=color;x.fillRect(0,0,W,H);
-    rr(x,FR,FR,W-FR*2,H-FR*2,18);x.fillStyle="#fffdf6";x.fill();
-    bunting(x,FR,FR+6,FR+Math.min(220,W*.26),FR+56,6);
-    bunting(x,W-FR-Math.min(220,W*.26),FR+56,W-FR,FR+6,6);
-    x.font="bold 34px "+FONT;var tw=Math.min(W-FR*2-200,Math.max(280,x.measureText(title).width+70)),tx=(W-tw)/2,ty=FR+26,th=66;
-    rr(x,tx+4,ty+4,tw,th,10);x.fillStyle=color;x.fill();
-    rr(x,tx,ty,tw,th,10);x.fillStyle="#fff";x.fill();x.strokeStyle=ink;x.lineWidth=2.5;x.stroke();
-    x.fillStyle=ink;x.textAlign="center";x.fillText(wrap(x,title+(pages>1?"（"+(p+1)+"/"+pages+"）":""),tw-30,1)[0],W/2,ty+15);
-    if(bandLogo){var lmw=Math.min(380,W-FR*2-80),ls=Math.min(lmw/bandLogo.width,LOGO_H/bandLogo.height),lw=bandLogo.width*ls,lh=bandLogo.height*ls;
-      x.drawImage(bandLogo,(W-lw)/2,ty+th+14+(LOGO_H-lh)/2,lw,lh)}
-    if(sub){x.font="bold 18px "+FONT;x.fillStyle="#e8498c";x.fillText(wrap(x,sub,W-FR*2-60,1)[0],W/2,ty+th+14+LOGO_H+(bandLogo?8:0))}
-    x.textAlign="left";x.font="13px "+FONT;x.fillStyle=soft;var iy=FR+HEAD-46;
-    if(author)x.fillText("整理者："+author,FR+IN,iy);
-    if(social)x.fillText(social,FR+IN,iy+18);
-    x.textAlign="right";
-    if(hasPrice)x.fillText("官方售價（日圓・含稅）",W-FR-IN,iy);
-    x.fillText("共 "+list.length+" 件",W-FR-IN,iy+18);
-    x.strokeStyle="#eadfce";x.lineWidth=1;x.beginPath();x.moveTo(FR+IN,FR+HEAD-8);x.lineTo(W-FR-IN,FR+HEAD-8);x.stroke();
-    part.forEach(function(d,i){
-      var cx=gx0+(i%cols)*(CW+GX),cy=FR+HEAD+Math.floor(i/cols)*(CH+GY),ix=cx+(CW-IMG)/2,im=imgs[d.id];
-      if(im){var s=Math.min(IMG/im.width,IMG/im.height),w=im.width*s,h=im.height*s;
-        x.save();rr(x,ix,cy,IMG,IMG,8);x.clip();x.drawImage(im,ix+(IMG-w)/2,cy+(IMG-h)/2,w,h);x.restore()}
-      else drawCoat(x,ix+IMG/2,cy+IMG/2,IMG*.78,d.hue);
-      x.textAlign="center";x.fillStyle=ink;x.font="bold 13px "+FONT;
-      wrap(x,d.name,CW-6,2).forEach(function(l,k){x.fillText(l,cx+CW/2,cy+IMG+10+k*17)});
-      var y=cy+IMG+10+NAME;
-      if(hasPrice){var pt=priceText(d);if(pt){x.font="bold 16px "+FONT;x.fillStyle=ink;x.fillText(pt,cx+CW/2,y)}y+=PR}
-      if(MINE.notes[d.id]){x.font="bold 13px "+FONT;x.fillStyle="#e8498c";x.fillText(wrap(x,MINE.notes[d.id],CW-6,1)[0],cx+CW/2,y)}
-    });
-    x.textAlign="left";x.font="12px "+FONT;x.fillStyle=soft;
-    x.fillText("*資料來源："+(/^https?:/.test(location.protocol)?location.host+location.pathname.replace(/[^/]*$/,""):"法被圖鑑"),FR+IN,H-FR-36);
-    x.textAlign="right";x.fillText("匯出日期 "+ds,W-FR-IN,H-FR-36);x.textAlign="left";
-    var blob=await new Promise(function(res){c.toBlob(res,"image/png")});
-    if(!blob){$("ex-msg").textContent="產生失敗：圖片太大，請減少件數後再試。";$("ex-go").disabled=false;return}
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);
-    a.download=title.replace(/[\\/:*?"<>|]/g,"_")+"-"+now.getFullYear()+String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0")+(pages>1?"-"+(p+1):"")+".png";
-    document.body.appendChild(a);a.click();a.remove();(function(u){setTimeout(function(){URL.revokeObjectURL(u)},5000)})(a.href);
-  }
-  $("ex-msg").textContent="完成！已下載 "+pages+" 張 PNG"+(bad?"。有 "+bad+" 張照片無法載入，已用法被圖示代替。":"。");
-  $("ex-go").disabled=false;
-}
-$("export").onclick=openExport;
-$("ex-go").onclick=function(){doExport().catch(function(e){$("ex-msg").textContent="匯出失敗："+e.message;$("ex-go").disabled=false})};
-$("ex-close").onclick=function(){$("exdlg").close()};
-$("exdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
-updateExportBtn();
-// ===== 近期演唱會（打開主頁時即時讀取 bang-dream.com 的公開資料，取最近 5 場「ライブ」）=====
-// ===== 團體最近活動（從 BanG Dream! 官網動態讀取）=====
-var ARTIST={"poppinparty":8,"afterglow":9,"pastelpalettes":10,"roselia":11,"hellohappyworld":12,"morfonica":13,"raiseasuilen":14,"mygo":15,"avemujica":16,"夢限大mewtype":17};
-var GBC={"togenashitogeari":"tgtg","diamonddust":"dd"};
-var GBC_URL="https://raw.githubusercontent.com/Aemo-0304/hapi/data/gbc-lives.json",GBC_P=null;
-var NEXT={};
-function gkey(gid){var g=GROUPS.filter(function(x){return x.id===gid})[0];return g?g.name.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]/g,""):""}
-function hasNext(gid){var k=gkey(gid);return !!(ARTIST[k]||GBC[k])}
-function loadGbc(key){
-  if(!GBC_P)GBC_P=fetch(GBC_URL,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).catch(function(e){GBC_P=null;throw e});
-  var today=todayStr();
-  return GBC_P.then(function(j){
-    var best=null;
-    (j.events||[]).forEach(function(e){
-      if((e.groups||[]).indexOf(key)<0)return;
-      (e.items||[]).forEach(function(it){
-        if(it.date>=today&&(!best||it.date<best.start))best={title:e.title,link:e.link,start:it.date,when:"",place:it.place||""};
+    <dialog id="exdlg" aria-labelledby="ex-h" class="exdlg">
+      <h2 id="ex-h" style="margin: 0 0 14px; font-size: 20px">匯出圖鑑（PNG）</h2>
+      <div class="exform">
+        <fieldset>
+          <legend>要放哪些法被 <b id="ex-count"></b></legend>
+          <label class="row"><input type="radio" name="exr" id="ex-custom-r" /> 依樂團／人物／活動挑選</label>
+          <div class="ex3" id="ex-custom">
+            <label>樂團<select id="ex-g"></select></label>
+            <label>人物<select id="ex-m"></select></label>
+            <label>活動<select id="ex-e"></select></label>
+          </div>
+          <label class="row"
+            ><input type="radio" name="exr" id="ex-mine" /> <span id="ex-mine-lab">我勾選的</span></label
+          >
+          <p class="exhint">在法被卡片右上角點「＋」可以自己挑選，勾選會記在這個瀏覽器裡。</p>
+        </fieldset>
+        <label>標題<input type="text" id="ex-title" maxlength="30" /></label>
+        <label>副標題<input type="text" id="ex-sub" maxlength="40" placeholder="（可不填）" /></label>
+        <div class="ex2">
+          <label>整理者<input type="text" id="ex-author" maxlength="30" placeholder="（可不填）" /></label>
+          <label
+            >社群帳號<input type="text" id="ex-social" maxlength="40" placeholder="Threads / IG …"
+          /></label>
+        </div>
+        <div class="ex2">
+          <label
+            >每排件數<select id="ex-cols">
+              <option>3</option>
+              <option>4</option>
+              <option selected>5</option>
+            </select></label
+          >
+          <label>外框顏色<input type="color" id="ex-color" value="#f9d77e" /></label>
+        </div>
+        <label class="row"><input type="checkbox" id="ex-price" checked /> 顯示官方售價</label>
+        <details class="exnotes">
+          <summary>每件的備註（已收、待收…）<span id="ex-notes-n"></span></summary>
+          <p class="exhint">填了的會用粉紅字印在價格下方，沒填就不顯示。</p>
+          <div id="ex-notes"></div>
+        </details>
+        <p class="exmsg" id="ex-msg" role="status"></p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap">
+        <button class="reset" id="ex-clear" type="button" style="margin: 0; width: auto; padding: 9px 14px">
+          清空勾選
+        </button>
+        <button class="reset" id="ex-close" type="button" style="margin: 0; flex: 1">關閉</button>
+        <button class="close" id="ex-go" type="button" style="flex: 2">產生並下載 PNG</button>
+      </div>
+    </dialog>
+    <dialog id="advdlg" class="advdlg" aria-labelledby="adv-h">
+      <div class="adv-top">
+        <h2 id="adv-h">進階搜尋</h2>
+        <button class="adv-sel" id="adv-all" type="button"><i class="ck"></i>全員選擇</button>
+      </div>
+      <div class="adv-body">
+        <div id="adv-chars"></div>
+      </div>
+      <div class="adv-foot">
+        <button class="adv-btn" id="adv-reset" type="button">清除條件</button>
+        <button class="adv-btn" id="adv-cancel" type="button">取消</button>
+        <button class="adv-btn ok" id="adv-ok" type="button">確定</button>
+      </div>
+    </dialog>
+    <dialog id="livesdlg" aria-label="近期演唱會" class="livesdlg">
+      <section class="lives" id="lives"></section>
+      <button class="close" id="lives-close" type="button">關閉</button>
+    </dialog>
+    <div class="fab-panel" id="fabpanel" role="dialog" aria-label="二手平台推薦與更新日誌" hidden>
+      <div class="fab-tabs" role="tablist">
+        <button type="button" role="tab" class="fab-tab" id="tab-shop" data-tab="shop">
+          🛍️ <span id="shop-title">二手平台推薦</span>
+        </button>
+        <button type="button" role="tab" class="fab-tab" id="tab-help" data-tab="help">
+          📕 <span id="help-title">更新日誌</span>
+        </button>
+      </div>
+      <div class="fab-body helpbody" id="fab-body"></div>
+    </div>
+    <button
+      type="button"
+      class="fab"
+      id="fab"
+      aria-expanded="false"
+      aria-controls="fabpanel"
+      title="二手平台推薦／更新日誌"
+    >
+      <img class="fab-ico" src="photos/fab_avatar.webp?v=3" alt="" /><span class="fab-x">✕</span>
+    </button>
+    <dialog id="dlg" aria-labelledby="d-name">
+      <div class="d-img">
+        <div id="d-img"></div>
+        <button class="d-x" id="dlg-close" type="button" aria-label="關閉">✕</button>
+      </div>
+      <div class="d-body">
+        <div class="d-tags" id="d-tags"></div>
+        <h2 id="d-name"></h2>
+        <div class="d-fields" id="d-fields"></div>
+        <button type="button" class="d-pick" id="d-pick"></button>
+        <div class="d-nav">
+          <button type="button" id="d-prev">‹ 上一個</button>
+          <span id="d-pos"></span>
+          <button type="button" id="d-next">下一個 ›</button>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="db.js"></script>
+    <script src="data.js"></script>
+    <script>
+      var DB = Store.load();
+      var GROUPS = DB.groups,
+        PLACES = DB.places;
+      var DATA = DB.items.filter(function (d) {
+        return GROUPS.some(function (g) {
+          return g.id === d.group;
+        });
       });
-    });
-    return best;
-  }).catch(function(){return undefined});
-}
-function artistId(gid){return ARTIST[gkey(gid)]||0}
-function todayStr(){var n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")}
-function loadNext(aid){
-  if(NEXT[aid])return NEXT[aid];
-  var today=todayStr();
-  NEXT[aid]=fetch(LIVES_API+"events?tax_artist="+aid+"&per_page=50&_fields=title,link,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place")
-    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
-    .then(function(j){
-      var up=j.map(function(e){var a=e.acf||{},d=a.cf_events_dates||{};
-        return {title:decodeHtml(e.title&&e.title.rendered||""),link:e.link,start:(d.cf_events_dates_start||"").slice(0,10),when:a.cf_events_schedule||"",place:a.cf_events_place||""}})
-        .filter(function(e){return e.start&&e.start>=today})
-        .sort(function(a,b){return a.start.localeCompare(b.start)});
-      return up[0]||null;
-    })
-    .catch(function(){delete NEXT[aid];return undefined});
-  return NEXT[aid];
-}
-function renderNext(gid){
-  var aid=artistId(gid),gk=GBC[gkey(gid)],box=$("nextlive");if(!box||!(aid||gk))return;
-  box.innerHTML='<span class="nl-tag">下一場活動</span><span class="nl-loading">讀取中…</span>';
-  (aid?loadNext(aid):loadGbc(gk)).then(function(e){
-    box=$("nextlive");if(!box||S.group!==gid)return;
-    if(e===undefined){box.remove();return}
-    if(!e){box.innerHTML='<span class="nl-tag">下一場活動</span><span class="nl-loading">官網目前沒有已公布的活動</span>';return}
-    var t=todayStr().split("-"),s=e.start.split("-");
-    var days=Math.round((Date.UTC(+s[0],s[1]-1,+s[2])-Date.UTC(+t[0],t[1]-1,+t[2]))/86400000);
-    box.innerHTML='<a href="'+esc(e.link)+'" target="_blank" rel="noopener">'
-      +'<div class="nl-count">'+(days===0?'<b>今天</b>':'倒數<b>'+days+'</b>天')+'</div>'
-      +'<div class="nl-info"><span class="nl-tag">下一場活動</span><h3>'+esc(e.title)+'</h3>'
-      +'<small>📅 '+esc(e.when||e.start.replace(/^(\d+)-0?(\d+)-0?(\d+)$/,"$1年$2月$3日"))+(e.place?'　📍 '+esc(e.place):'')+'</small></div></a>';
-  });
-}
-var LIVES=null,LIVES_ERR=false,LIVES_API="https://bang-dream.com/wp-json/wp/v2/";
-function decodeHtml(s){var t=document.createElement("textarea");t.innerHTML=s;return t.value}
-function loadLives(){
-  try{var c=JSON.parse(sessionStorage.getItem("hapi-lives4")||"null");if(c&&Date.now()-c.t<3600000){LIVES=c.d;return Promise.resolve()}}catch(e){}
-  var now=new Date(),today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-  return fetch(LIVES_API+"events?tax_events=51&per_page=50&_fields=id,title,link,featured_media,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place,acf.cf_events_image")
-    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
-    .then(function(j){
-      var up=j.map(function(e){var a=e.acf||{},d=a.cf_events_dates||{};
-        return {title:decodeHtml(e.title&&e.title.rendered||""),link:e.link,start:d.cf_events_dates_start||"",end:d.cf_events_dates_end||"",
-          when:a.cf_events_schedule||"",place:a.cf_events_place||"",img:a.cf_events_image||0,fm:e.featured_media||0}})
-        .filter(function(e){return e.start&&e.start.slice(0,10)>=today})
-        .sort(function(a,b){return a.start.localeCompare(b.start)}).slice(0,4);
-      var ids=[];up.forEach(function(e){if(e.img)ids.push(e.img);if(e.fm)ids.push(e.fm)});
-      return (ids.length?fetch(LIVES_API+"media?include="+ids.join(",")+"&per_page=20&_fields=id,source_url").then(function(r){return r.ok?r.json():[]}):Promise.resolve([]))
-        .then(function(m){var map={};m.forEach(function(x){map[x.id]=x.source_url});up.forEach(function(e){e.src=map[e.img]||map[e.fm]||""});
-          LIVES=up;try{sessionStorage.setItem("hapi-lives4",JSON.stringify({t:Date.now(),d:up}))}catch(e){}});
-    })
-    .catch(function(){LIVES_ERR=true});
-}
-function renderLives(){
-  var box=$("lives");if(!box)return;
-    var head='<div class="lives-head"><h2>近期演唱會</h2><a href="https://bang-dream.com/events/" target="_blank" rel="noopener">資料來源：BanG Dream! 官方網站 ›</a></div>';
-  if(LIVES_ERR){box.innerHTML=head+'<p class="lives-loading">暫時無法取得演唱會資訊，請點右上方連結到官網查看。</p>';return}
-  if(!LIVES){box.innerHTML=head+'<p class="lives-loading">載入中…</p>';return}
-  if(!LIVES.length){box.innerHTML=head+'<p class="lives-loading">目前沒有即將舉行的演唱會。</p>';return}
-  box.innerHTML=head+'<div class="lives-grid">'+LIVES.map(function(e){
-    return '<a class="live" href="'+esc(e.link)+'" target="_blank" rel="noopener">'
-      +'<div class="live-img">'+(e.src?'<img src="'+esc(e.src)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</div>'
-      +'<div class="live-body"><b class="live-date">'+esc(e.when||e.start.slice(0,10))+'</b><h3>'+esc(e.title)+'</h3>'+(e.place?'<small>📍 '+esc(e.place)+'</small>':'')+'</div></a>';
-  }).join("")+'</div>';
-}
-$("livesbtn").onclick=function(){LIVES_ERR=false;renderLives();$("livesdlg").showModal();if(!LIVES)loadLives().then(renderLives)};
-$("lives-close").onclick=function(){$("livesdlg").close()};
-$("livesdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
-buildFilters();buildChips();render();
-</script>
-</body>
+      DATA.forEach(function (d) {
+        d.hue = GROUPS.filter(function (g) {
+          return g.id === d.group;
+        })[0].hue;
+        d.date = d.year * 100 + d.month;
+      });
+
+      var S = { q: "", group: null, member: null, year: {}, place: {}, chars: {}, sort: "new" };
+      var $ = function (id) {
+        return document.getElementById(id);
+      };
+      function gname(id) {
+        return GROUPS.filter(function (g) {
+          return g.id === id;
+        })[0].name;
+      }
+      function gobj(id) {
+        return GROUPS.filter(function (g) {
+          return g.id === id;
+        })[0];
+      }
+      function mname(d) {
+        if (!d.member) return "";
+        var g = gobj(d.group);
+        if (d.member === "all") return g.name + "全團";
+        var m = (g.members || []).filter(function (m) {
+          return m.id === d.member;
+        })[0];
+        return m ? m.name : "";
+      }
+      function setGroup(id) {
+        S.group = id;
+        S.member = null;
+        buildChips();
+        render();
+      }
+      function buildMembers() {
+        var box = $("members"),
+          g = S.group && gobj(S.group);
+        if (!g || !g.members || !g.members.length) {
+          box.style.display = "none";
+          box.innerHTML = "";
+          return;
+        }
+        box.style.display = "";
+        box.innerHTML = '<span style="align-self:center;color:var(--muted);font-size:14px">角色</span>';
+        [{ id: "all", name: g.name + "全團", color: "hsl(" + g.hue + " 80% 55%)" }]
+          .concat(g.members)
+          .forEach(function (m) {
+            var n = DATA.filter(function (d) {
+              return d.group === g.id && d.member === m.id;
+            }).length;
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "chip";
+            b.setAttribute("aria-pressed", S.member === m.id);
+            b.innerHTML =
+              '<i style="background:' + m.color + '"></i>' + esc(m.name) + " <small>" + n + "</small>";
+            b.onclick = function () {
+              S.member = S.member === m.id ? null : m.id;
+              buildMembers();
+              render();
+            };
+            box.appendChild(b);
+          });
+      }
+
+      var T = null,
+        ADV_SHORT = { "TOGENASHI TOGEARI": "TOGENASHI" };
+      function cp(o) {
+        var r = {};
+        for (var k in o) r[k] = 1;
+        return r;
+      }
+      function charGroups() {
+        return GROUPS.filter(function (g) {
+          return g.members && g.members.length;
+        });
+      }
+      function allCharKeys() {
+        var ks = [];
+        charGroups().forEach(function (g) {
+          ks.push(g.id + ":all");
+          g.members.forEach(function (m) {
+            ks.push(g.id + ":" + m.id);
+          });
+        });
+        return ks;
+      }
+      function shortName(n) {
+        return n
+          .replace(/^「[^」]*」/, "")
+          .split("／")[0]
+          .trim();
+      }
+      function buildFilters() {
+        var n = Object.keys(S.chars).filter(function (k) {
+          return !/:all$/.test(k);
+        }).length;
+        var b = $("adv-n");
+        b.hidden = !n;
+        b.textContent = n;
+        if ($("advdlg").open) buildAdv();
+      }
+      function ck(on) {
+        return '<i class="ck' + (on ? " on" : "") + '"></i>';
+      }
+      function buildAdv() {
+        var html = "";
+        charGroups().forEach(function (g) {
+          var tiles = g.members;
+          var keys = [g.id + ":all"].concat(
+            tiles.map(function (m) {
+              return g.id + ":" + m.id;
+            }),
+          );
+          var allOn = keys.every(function (k) {
+            return T.chars[k];
+          });
+          html +=
+            '<div class="adv-row"><div class="adv-g"><b>' +
+            (g.icon
+              ? '<img class="adv-gi" src="' +
+                esc(g.icon) +
+                '" alt="" height="18" style="height:18px;width:auto;max-width:40px">'
+              : "") +
+            '<span title="' +
+            esc(g.name) +
+            '">' +
+            esc(ADV_SHORT[g.name] || g.name) +
+            '</span></b><button type="button" class="adv-sel" data-gall="' +
+            g.id +
+            '">' +
+            ck(allOn) +
+            '全選</button></div><div class="adv-ms">';
+          tiles.forEach(function (m) {
+            var k = g.id + ":" + m.id,
+              on = !!T.chars[k],
+              n = DATA.filter(function (d) {
+                return d.group === g.id && d.member === m.id;
+              }).length;
+            var av = m.avatar
+              ? '<img src="' +
+                esc(m.avatar) +
+                '" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'' +
+                esc(shortName(m.name)).charAt(0) +
+                "'))\">"
+              : esc(shortName(m.name).charAt(0));
+            html +=
+              '<button type="button" class="adv-m' +
+              (on ? " on" : "") +
+              (n ? "" : " zero") +
+              '" data-k="' +
+              esc(k) +
+              '" aria-pressed="' +
+              on +
+              '" title="' +
+              esc(m.name) +
+              "（" +
+              n +
+              ' 件）">' +
+              ck(on) +
+              '<span class="av' +
+              (m.avatar ? " img" : "") +
+              '" style="--c:' +
+              esc(m.color) +
+              '">' +
+              av +
+              '</span><span class="nm">' +
+              esc(shortName(m.name)) +
+              "</span></button>";
+          });
+          html += "</div></div>";
+        });
+        $("adv-chars").innerHTML = html || '<p class="adv-empty">尚未設定團員，可到後台新增</p>';
+        var ks = allCharKeys();
+        $("adv-all").innerHTML =
+          ck(
+            ks.length &&
+              ks.every(function (k) {
+                return T.chars[k];
+              }),
+          ) + "全員選擇";
+      }
+      $("adv").onclick = function () {
+        T = { chars: cp(S.chars), year: cp(S.year), place: cp(S.place) };
+        buildAdv();
+        $("advdlg").showModal();
+      };
+      $("advdlg").addEventListener("click", function (e) {
+        if (e.target === this) {
+          this.close();
+          return;
+        }
+        var t = e.target.closest("button");
+        if (!t) return;
+        if (t.dataset.k) {
+          var k = t.dataset.k;
+          if (T.chars[k]) delete T.chars[k];
+          else T.chars[k] = 1;
+          var gid = k.split(":")[0],
+            gg = GROUPS.filter(function (x) {
+              return x.id === gid;
+            })[0];
+          if (
+            gg.members.every(function (m) {
+              return T.chars[gid + ":" + m.id];
+            })
+          )
+            T.chars[gid + ":all"] = 1;
+          else delete T.chars[gid + ":all"];
+        } else if (t.dataset.gall) {
+          var g = GROUPS.filter(function (x) {
+              return x.id === t.dataset.gall;
+            })[0],
+            ks = [g.id + ":all"].concat(
+              g.members.map(function (m) {
+                return g.id + ":" + m.id;
+              }),
+            );
+          var on = ks.every(function (k) {
+            return T.chars[k];
+          });
+          ks.forEach(function (k) {
+            if (on) delete T.chars[k];
+            else T.chars[k] = 1;
+          });
+        } else if (t.id === "adv-all") {
+          var ks = allCharKeys(),
+            on = ks.every(function (k) {
+              return T.chars[k];
+            });
+          ks.forEach(function (k) {
+            if (on) delete T.chars[k];
+            else T.chars[k] = 1;
+          });
+        } else if (t.id === "adv-reset") {
+          T = { chars: {}, year: {}, place: {} };
+        } else if (t.id === "adv-cancel") {
+          this.close();
+          return;
+        } else if (t.id === "adv-ok") {
+          var ks = allCharKeys();
+          if (
+            ks.length &&
+            ks.every(function (k) {
+              return T.chars[k];
+            })
+          )
+            T.chars = {};
+          S.chars = T.chars;
+          S.year = T.year;
+          S.place = T.place;
+          this.close();
+          buildFilters();
+          render();
+          return;
+        } else return;
+        buildAdv();
+      });
+      function buildChips() {
+        var box = $("chips");
+        box.innerHTML = "";
+        GROUPS.forEach(function (g) {
+          var n = DATA.filter(function (d) {
+            return d.group === g.id;
+          }).length;
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "chip";
+          b.setAttribute("aria-pressed", S.group === g.id);
+          b.innerHTML =
+            (g.icon
+              ? '<img class="chip-icon" src="' + esc(g.icon) + '" alt="">'
+              : '<i style="background:hsl(' + g.hue + ' 80% 55%)"></i>') +
+            esc(g.name) +
+            " <small>" +
+            n +
+            "</small>";
+          b.onclick = function () {
+            setGroup(S.group === g.id ? null : g.id);
+          };
+          box.appendChild(b);
+        });
+        buildMembers();
+      }
+      function has(o) {
+        return Object.keys(o).length > 0;
+      }
+      function esc(t) {
+        return String(t).replace(/[&<>"]/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+        });
+      }
+      function badge(d) {
+        if (d.photo)
+          return (
+            '<img class="coat" style="object-fit:cover;border-radius:10px" src="' +
+            esc(d.photo) +
+            '" alt="" onerror="this.style.visibility=\'hidden\'">'
+          );
+        var c = "hsl(" + d.hue + " 70% 42%)";
+        var extra = "";
+        return (
+          '<svg class="coat" viewBox="0 0 100 100" aria-hidden="true"><path d="M10 22L38 14L50 24L62 14L90 22L98 52L80 56L78 90L22 90L20 56L2 52Z" fill="' +
+          c +
+          '" stroke="#0003"/>' +
+          extra +
+          '<path d="M38 14L50 26L50 90L44 90L44 30L34 16Z" fill="#fff"/><path d="M62 14L50 26L50 90L56 90L56 30L66 16Z" fill="#fff"/></svg>'
+        );
+      }
+      function render() {
+        var q = S.q.trim().toLowerCase();
+        var active = q || S.group || has(S.year) || has(S.place) || has(S.chars);
+        var main = $("main");
+        if (!active) {
+          var h =
+            '<div class="hint"><h2>點選團體，開始翻閱圖鑑</h2><p>也可以用搜尋或「進階搜尋」直接找</p></div><div class="groups">';
+          GROUPS.forEach(function (g) {
+            var n = DATA.filter(function (d) {
+              return d.group === g.id;
+            }).length;
+            h +=
+              '<button class="gcard" type="button" style="--c:hsl(' +
+              g.hue +
+              ' 80% 55%)" data-g="' +
+              g.id +
+              '">' +
+              (g.logo
+                ? '<img class="glogo" src="' +
+                  esc(g.logo) +
+                  '" alt="' +
+                  esc(g.name) +
+                  '" onerror="this.nextSibling.hidden=false;this.remove()"><b hidden>'
+                : "<b>") +
+              esc(g.name) +
+              "</b><small>" +
+              n +
+              " 件</small></button>";
+          });
+          main.innerHTML = h + "</div>";
+          Array.prototype.forEach.call(main.querySelectorAll(".gcard"), function (b) {
+            b.onclick = function () {
+              setGroup(b.dataset.g);
+            };
+          });
+          return;
+        }
+        var list = (CUR = DATA.filter(function (d) {
+          if (S.group && d.group !== S.group) return false;
+          if (S.member && d.member !== S.member) return false;
+          if (has(S.chars) && !S.chars[d.group + ":" + d.member]) return false;
+          if (has(S.year) && !S.year[d.year]) return false;
+          if (has(S.place) && !S.place[d.place]) return false;
+          if (q && (d.name + d.event + d.place + mname(d)).toLowerCase().indexOf(q) < 0) return false;
+          return true;
+        }));
+        list.sort(function (a, b) {
+          return S.sort === "new"
+            ? b.date - a.date
+            : S.sort === "old"
+              ? a.date - b.date
+              : a.name.localeCompare(b.name, "zh-Hant");
+        });
+        var nx = S.group && hasNext(S.group) ? '<div class="nextlive" id="nextlive"></div>' : "";
+        if (!list.length) {
+          main.innerHTML = nx + '<p class="empty">找不到符合的法被，試試減少篩選條件。</p>';
+          if (nx) renderNext(S.group);
+          return;
+        }
+        var h = nx + '<p class="count">共 ' + list.length + ' 件</p><div class="grid">';
+        list.forEach(function (d) {
+          var pk = MINE.ids.indexOf(d.id) >= 0;
+          h +=
+            '<button class="item' +
+            (pk ? " picked" : "") +
+            '" type="button" data-id="' +
+            d.id +
+            '"><span class="pick" role="checkbox" tabindex="0" aria-checked="' +
+            pk +
+            '" aria-label="加入我的圖鑑" title="加入／移出我的圖鑑"></span>' +
+            badge(d) +
+            "<h3>" +
+            esc(d.name) +
+            "</h3><small>" +
+            (mname(d) ? esc(mname(d)) + "・" : "") +
+            d.year +
+            " 年 " +
+            d.month +
+            " 月</small></button>";
+        });
+        main.innerHTML = h + "</div>";
+        if (nx) renderNext(S.group);
+        Array.prototype.forEach.call(main.querySelectorAll(".item"), function (b) {
+          b.onclick = function (e) {
+            if (e.target.classList.contains("pick")) {
+              togglePick(+b.dataset.id, b);
+              return;
+            }
+            openDlg(+b.dataset.id);
+          };
+        });
+        Array.prototype.forEach.call(main.querySelectorAll(".pick"), function (p) {
+          p.onkeydown = function (e) {
+            if (e.key === " " || e.key === "Enter") {
+              e.preventDefault();
+              e.stopPropagation();
+              togglePick(+p.parentNode.dataset.id, p.parentNode);
+            }
+          };
+        });
+      }
+      var CUR = [],
+        curId = null;
+      function mcolor(d) {
+        var g = gobj(d.group);
+        if (d.member === "all") return "hsl(" + g.hue + " 80% 55%)";
+        var m = (g.members || []).filter(function (m) {
+          return m.id === d.member;
+        })[0];
+        return m ? m.color : "";
+      }
+      function field(label, val, full) {
+        return val
+          ? "<div" +
+              (full ? ' class="full"' : "") +
+              "><label>" +
+              label +
+              "</label><span>" +
+              esc(val) +
+              "</span></div>"
+          : "";
+      }
+      function openDlg(id) {
+        var d = DATA.filter(function (x) {
+          return x.id === id;
+        })[0];
+        curId = id;
+        var gc = "hsl(" + d.hue + " 75% 45%)";
+        var box = $("d-img");
+        box.innerHTML = "";
+        if (d.photo) {
+          var im = new Image();
+          im.src = d.photo;
+          im.alt = d.name;
+          im.onerror = function () {
+            box.innerHTML = badge({ hue: d.hue });
+          };
+          box.appendChild(im);
+        } else box.innerHTML = badge({ hue: d.hue });
+        $("d-tags").innerHTML =
+          '<span class="d-tag" style="--c:' +
+          gc +
+          '">' +
+          esc(gname(d.group)) +
+          "</span>" +
+          (mname(d) ? '<span class="d-tag" style="--c:' + mcolor(d) + '">' + esc(mname(d)) + "</span>" : "");
+        $("d-name").textContent = d.name;
+        $("d-fields").innerHTML =
+          field("發售日期", d.year + " 年 " + d.month + " 月") +
+          field("販售地點", d.place) +
+          (d.currency === "NA"
+            ? field("官方售價", "-")
+            : d.price
+              ? field(
+                  "官方售價",
+                  d.currency === "CNY"
+                    ? "人民幣 " + Number(d.price).toLocaleString() + " 元"
+                    : "¥" + Number(d.price).toLocaleString() + "（日圓・含稅）",
+                )
+              : "") +
+          field("活動／商品", d.event, true);
+        var i = CUR.indexOf(d);
+        $("d-pos").textContent = i >= 0 ? i + 1 + " / " + CUR.length : "";
+        $("d-prev").disabled = i <= 0;
+        $("d-next").disabled = i < 0 || i >= CUR.length - 1;
+        var on = MINE.ids.indexOf(id) >= 0;
+        $("d-pick").textContent = on ? "✓ 已加入我的圖鑑（點一下移除）" : "＋ 加入我的圖鑑";
+        $("d-pick").classList.toggle("on", on);
+        if (!$("dlg").open) $("dlg").showModal();
+      }
+      function navDlg(n) {
+        var i =
+          CUR.findIndex(function (d) {
+            return d.id === curId;
+          }) + n;
+        if (i >= 0 && i < CUR.length) openDlg(CUR[i].id);
+      }
+      $("d-prev").onclick = function () {
+        navDlg(-1);
+      };
+      $("d-pick").onclick = function () {
+        var card = document.querySelector('.item[data-id="' + curId + '"]');
+        togglePick(curId, card);
+        openDlg(curId);
+      };
+      $("d-next").onclick = function () {
+        navDlg(1);
+      };
+      document.addEventListener("keydown", function (e) {
+        if (!$("dlg").open) return;
+        if (e.key === "ArrowLeft") navDlg(-1);
+        if (e.key === "ArrowRight") navDlg(1);
+      });
+      $("dlg-close").onclick = function () {
+        $("dlg").close();
+      };
+      (function () {
+        var API = "https://abacus.jasoncameron.dev/",
+          KEY = "aemo-0304-hapi/visits",
+          el = $("visits");
+        var online = /^https?:$/.test(location.protocol) && location.hostname.indexOf("github.io") >= 0,
+          counted = false;
+        try {
+          counted = sessionStorage.getItem("hapi-visited") === "1";
+        } catch (e) {}
+        var mode = online && !counted ? "hit/" : "get/";
+        fetch(API + mode + KEY)
+          .then(function (r) {
+            return r.ok ? r.json() : { value: 0 };
+          })
+          .then(function (j) {
+            el.textContent = "到訪人數：" + Number(j.value || 0).toLocaleString();
+            if (mode === "hit/")
+              try {
+                sessionStorage.setItem("hapi-visited", "1");
+              } catch (e) {}
+          })
+          .catch(function () {
+            el.textContent = "到訪人數：—";
+          });
+      })();
+      var FAB_TAB = "shop";
+      function fabShow(tab) {
+        FAB_TAB = tab;
+        $("shop-title").textContent = DB.shopTitle || Store.shopTitle;
+        $("help-title").textContent = DB.helpTitle || Store.helpTitle;
+        ["shop", "help"].forEach(function (t) {
+          var b = $("tab-" + t);
+          b.classList.toggle("on", t === tab);
+          b.setAttribute("aria-selected", t === tab);
+        });
+        $("fab-body").innerHTML =
+          tab === "shop"
+            ? Store.helpHtml(DB.shop != null ? DB.shop : Store.shopText)
+            : Store.helpHtml(DB.help != null ? DB.help : Store.helpText);
+        $("fab-body").scrollTop = 0;
+      }
+      function fabToggle(open) {
+        var p = $("fabpanel");
+        if (open == null) open = p.hidden;
+        if (open) {
+          fabShow(FAB_TAB);
+          p.hidden = false;
+          requestAnimationFrame(function () {
+            p.classList.add("show");
+          });
+        } else {
+          p.classList.remove("show");
+          setTimeout(function () {
+            if (!p.classList.contains("show")) p.hidden = true;
+          }, 180);
+        }
+        $("fab").classList.toggle("open", open);
+        $("fab").setAttribute("aria-expanded", open);
+      }
+      $("fab").onclick = function () {
+        fabToggle();
+      };
+      $("tab-shop").onclick = function () {
+        fabShow("shop");
+      };
+      $("tab-help").onclick = function () {
+        fabShow("help");
+      };
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !$("fabpanel").hidden) fabToggle(false);
+      });
+      document.addEventListener("click", function (e) {
+        if (!$("fabpanel").hidden && !e.target.closest("#fabpanel,#fab")) fabToggle(false);
+      });
+      $("dlg").addEventListener("click", function (e) {
+        if (e.target === this) this.close();
+      });
+      $("q").oninput = function () {
+        S.q = this.value;
+        render();
+      };
+      $("sort").onchange = function () {
+        S.sort = this.value;
+        render();
+      };
+      $("theme").onclick = function () {
+        var root = document.documentElement,
+          dark =
+            root.getAttribute("data-theme") === "dark" ||
+            (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+        root.setAttribute("data-theme", dark ? "light" : "dark");
+        this.textContent = dark ? "🌙" : "☀️";
+      };
+      var MKEY = "hapi-mine-v1";
+      var MINE = (function () {
+        var m = null;
+        try {
+          m = JSON.parse(localStorage.getItem(MKEY) || "null");
+        } catch (e) {}
+        m = m || {};
+        m.ids = (m.ids || []).filter(function (id) {
+          return DATA.some(function (d) {
+            return d.id === id;
+          });
+        });
+        m.notes = m.notes || {};
+        return m;
+      })();
+      function saveMine() {
+        try {
+          localStorage.setItem(MKEY, JSON.stringify(MINE));
+        } catch (e) {}
+        updateExportBtn();
+      }
+      function updateExportBtn() {
+        $("export").textContent = "⬇ 匯出圖鑑" + (MINE.ids.length ? "（已勾 " + MINE.ids.length + "）" : "");
+      }
+      function togglePick(id, card) {
+        var i = MINE.ids.indexOf(id);
+        if (i >= 0) MINE.ids.splice(i, 1);
+        else MINE.ids.push(id);
+        var on = i < 0;
+        if (card) {
+          card.classList.toggle("picked", on);
+          var p = card.querySelector(".pick");
+          if (p) p.setAttribute("aria-checked", on);
+        }
+        saveMine();
+      }
+      function sortList(list) {
+        return list.sort(function (a, b) {
+          return S.sort === "new"
+            ? b.date - a.date
+            : S.sort === "old"
+              ? a.date - b.date
+              : a.name.localeCompare(b.name, "zh-Hant");
+        });
+      }
+      function memberLabel(g, mid) {
+        if (mid === "all") return g.name + "全團";
+        var m = (g.members || []).filter(function (m) {
+          return m.id === mid;
+        })[0];
+        return m ? m.name : "";
+      }
+      function opt(v, t, sel) {
+        return '<option value="' + esc(v) + '"' + (sel ? " selected" : "") + ">" + esc(t) + "</option>";
+      }
+      function fillMembersSel(cur) {
+        var gid = $("ex-g").value,
+          h = opt("", "全部人物", !cur);
+        GROUPS.forEach(function (g) {
+          if (gid && g.id !== gid) return;
+          if (!g.members || !g.members.length) return;
+          [{ id: "all" }].concat(g.members).forEach(function (m) {
+            var v = g.id + ":" + m.id,
+              n = DATA.filter(function (d) {
+                return d.group === g.id && d.member === m.id;
+              }).length;
+            if (n)
+              h += opt(
+                v,
+                memberLabel(g, m.id) + (gid ? "" : "（" + g.name + "）") + "　" + n + " 件",
+                v === cur,
+              );
+          });
+        });
+        $("ex-m").innerHTML = h;
+        $("ex-m").disabled = $("ex-m").options.length < 2;
+      }
+      function fillEventsSel(cur) {
+        var gid = $("ex-g").value,
+          mv = $("ex-m").value,
+          c = {};
+        DATA.forEach(function (d) {
+          if (gid && d.group !== gid) return;
+          if (mv && d.group + ":" + d.member !== mv) return;
+          if (d.event) c[d.event] = (c[d.event] || 0) + 1;
+        });
+        var h = opt("", "全部活動", !cur);
+        Object.keys(c)
+          .sort()
+          .forEach(function (e) {
+            h += opt(e, e + "　" + c[e] + " 件", e === cur);
+          });
+        $("ex-e").innerHTML = h;
+      }
+      function exMode() {
+        return $("ex-mine").checked ? "mine" : "custom";
+      }
+      function exList() {
+        if (exMode() === "mine")
+          return sortList(
+            DATA.filter(function (d) {
+              return MINE.ids.indexOf(d.id) >= 0;
+            }),
+          );
+        var gid = $("ex-g").value,
+          mv = $("ex-m").value,
+          ev = $("ex-e").value;
+        return sortList(
+          DATA.filter(function (d) {
+            if (gid && d.group !== gid) return false;
+            if (mv && d.group + ":" + d.member !== mv) return false;
+            if (ev && d.event !== ev) return false;
+            return true;
+          }),
+        );
+      }
+      function autoTitle() {
+        if (exMode() === "mine") return "我的法被圖鑑";
+        var gid = $("ex-g").value,
+          mv = $("ex-m").value,
+          ev = $("ex-e").value,
+          p = [];
+        if (mv) {
+          var a = mv.split(":");
+          p.push(memberLabel(gobj(a[0]), a[1]));
+        } else if (gid) p.push(gname(gid));
+        return (p.length ? p[0] + " " : "") + "法被圖鑑";
+      }
+      function autoSub() {
+        return exMode() === "custom" && $("ex-e").value ? $("ex-e").value : "";
+      }
+      var titleTouched = false,
+        subTouched = false;
+      function exRefresh() {
+        var n = exList().length;
+        $("ex-count").textContent = "共 " + n + " 件";
+        $("ex-custom").style.display = exMode() === "custom" ? "" : "none";
+        if (!titleTouched) $("ex-title").value = autoTitle();
+        if (!subTouched) $("ex-sub").value = autoSub();
+        renderNotes();
+        $("ex-go").disabled = !n;
+      }
+      function renderNotes() {
+        var list = exList();
+        $("ex-notes-n").textContent = "（" + list.length + " 件）";
+        $("ex-notes").innerHTML =
+          list
+            .map(function (d) {
+              return (
+                '<label class="exnote"><span>' +
+                esc(d.name) +
+                '</span><input type="text" maxlength="20" data-nid="' +
+                d.id +
+                '" value="' +
+                esc(MINE.notes[d.id] || "") +
+                '" placeholder="例如 已收、待收"></label>'
+              );
+            })
+            .join("") || '<p class="exhint">目前沒有法被。</p>';
+      }
+      $("ex-notes").addEventListener("input", function (e) {
+        var id = e.target.dataset.nid;
+        if (!id) return;
+        var v = e.target.value.trim();
+        if (v) MINE.notes[id] = v;
+        else delete MINE.notes[id];
+        saveMine();
+      });
+      function openExport() {
+        var groups = GROUPS.filter(function (g) {
+          return DATA.some(function (d) {
+            return d.group === g.id;
+          });
+        });
+        $("ex-g").innerHTML =
+          opt("", "全部樂團", !S.group) +
+          groups
+            .map(function (g) {
+              return opt(g.id, g.name, g.id === S.group);
+            })
+            .join("");
+        fillMembersSel(S.group && S.member ? S.group + ":" + S.member : "");
+        fillEventsSel("");
+        $("ex-mine-lab").textContent = "我勾選的（" + MINE.ids.length + " 件）";
+        $("ex-mine").disabled = !MINE.ids.length;
+        $("ex-custom-r").checked = true;
+        titleTouched = false;
+        subTouched = false;
+        $("ex-author").value = MINE.author || "";
+        $("ex-social").value = MINE.social || "";
+        if (MINE.cols) $("ex-cols").value = Math.min(5, MINE.cols);
+        if (MINE.color) $("ex-color").value = MINE.color;
+        $("ex-price").checked = MINE.showPrice !== false;
+        $("ex-msg").textContent =
+          location.protocol === "file:"
+            ? "⚠ 目前是在電腦上直接打開檔案，瀏覽器不允許把照片放進 PNG，匯出會用法被圖示代替。上傳到網站（GitHub Pages）後匯出就會有照片。"
+            : "";
+        exRefresh();
+        $("exdlg").showModal();
+      }
+      $("ex-g").onchange = function () {
+        fillMembersSel("");
+        fillEventsSel("");
+        exRefresh();
+      };
+      $("ex-m").onchange = function () {
+        fillEventsSel($("ex-e").value);
+        exRefresh();
+      };
+      $("ex-e").onchange = exRefresh;
+      $("ex-mine").onchange = exRefresh;
+      $("ex-custom-r").onchange = exRefresh;
+      $("ex-title").oninput = function () {
+        titleTouched = true;
+      };
+      $("ex-sub").oninput = function () {
+        subTouched = true;
+      };
+      $("ex-clear").onclick = function () {
+        if (!MINE.ids.length) return;
+        if (!confirm("清空所有勾選？（備註會保留）")) return;
+        MINE.ids = [];
+        saveMine();
+        render();
+        openExport();
+      };
+      function loadImg(src, cors) {
+        return new Promise(function (res) {
+          var im = new Image(),
+            done = false;
+          if (cors) im.crossOrigin = "anonymous";
+          var t = setTimeout(function () {
+            if (!done) {
+              done = true;
+              res(null);
+            }
+          }, 15000);
+          im.onload = function () {
+            if (!done) {
+              done = true;
+              clearTimeout(t);
+              res(im);
+            }
+          };
+          im.onerror = function () {
+            if (!done) {
+              done = true;
+              clearTimeout(t);
+              res(null);
+            }
+          };
+          im.src = src;
+        });
+      }
+      function safeImg(im) {
+        try {
+          var c = document.createElement("canvas");
+          c.width = c.height = 2;
+          var x = c.getContext("2d");
+          x.drawImage(im, 0, 0, 2, 2);
+          x.getImageData(0, 0, 1, 1);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+      function getImg(d) {
+        if (!d.photo) return Promise.resolve(null);
+        var local = !/^https?:/i.test(d.photo) || d.photo.indexOf(location.origin) === 0;
+        return loadImg(d.photo, !local).then(function (im) {
+          if (im && safeImg(im)) return im;
+          if (local) return null;
+          return loadImg(
+            "https://wsrv.nl/?url=" + encodeURIComponent(d.photo) + "&w=400&h=400&fit=inside",
+            true,
+          ).then(function (i2) {
+            return i2 && safeImg(i2) ? i2 : null;
+          });
+        });
+      }
+      var COAT = new Path2D("M10 22L38 14L50 24L62 14L90 22L98 52L80 56L78 90L22 90L20 56L2 52Z"),
+        COATL = new Path2D("M38 14L50 26L50 90L44 90L44 30L34 16Z"),
+        COATR = new Path2D("M62 14L50 26L50 90L56 90L56 30L66 16Z");
+      function drawCoat(x, cx, cy, size, hue) {
+        x.save();
+        x.translate(cx - size / 2, cy - size / 2);
+        x.scale(size / 100, size / 100);
+        x.fillStyle = "hsl(" + hue + ",70%,42%)";
+        x.fill(COAT);
+        x.strokeStyle = "rgba(0,0,0,.2)";
+        x.stroke(COAT);
+        x.fillStyle = "#fff";
+        x.fill(COATL);
+        x.fill(COATR);
+        x.restore();
+      }
+      function rr(x, X, Y, w, h, r) {
+        x.beginPath();
+        x.moveTo(X + r, Y);
+        x.arcTo(X + w, Y, X + w, Y + h, r);
+        x.arcTo(X + w, Y + h, X, Y + h, r);
+        x.arcTo(X, Y + h, X, Y, r);
+        x.arcTo(X, Y, X + w, Y, r);
+        x.closePath();
+      }
+      function wrap(x, text, maxW, maxLines) {
+        var lines = [],
+          cur = "",
+          i;
+        for (i = 0; i < text.length; i++) {
+          var t = cur + text[i];
+          if (x.measureText(t).width > maxW && cur) {
+            lines.push(cur);
+            cur = text[i];
+            if (lines.length === maxLines) break;
+          } else cur = t;
+        }
+        if (lines.length < maxLines) {
+          if (cur) lines.push(cur);
+        } else if (i < text.length) {
+          var l = lines[maxLines - 1];
+          while (l && x.measureText(l + "…").width > maxW) l = l.slice(0, -1);
+          lines[maxLines - 1] = l + "…";
+        }
+        return lines;
+      }
+      function priceText(d) {
+        if (d.currency === "NA") return "-";
+        if (!d.price) return "";
+        return d.currency === "CNY"
+          ? "人民幣 " + Number(d.price).toLocaleString() + " 元"
+          : "¥" + Number(d.price).toLocaleString();
+      }
+      function bunting(x, x0, y0, x1, y1, n) {
+        var cols = ["#ff9cc8", "#8fd3f4", "#ffd166", "#a8e6a1", "#c9a7ff"];
+        var mx = (x0 + x1) / 2,
+          my = Math.max(y0, y1) + 26;
+        x.strokeStyle = "#6b5a4e";
+        x.lineWidth = 1.5;
+        x.beginPath();
+        x.moveTo(x0, y0);
+        x.quadraticCurveTo(mx, my, x1, y1);
+        x.stroke();
+        for (var i = 0; i < n; i++) {
+          var t = (i + 0.5) / n,
+            px = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * mx + t * t * x1,
+            py = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * my + t * t * y1;
+          var dx = 2 * (1 - t) * (mx - x0) + 2 * t * (x1 - mx),
+            dy = 2 * (1 - t) * (my - y0) + 2 * t * (y1 - my),
+            len = Math.hypot(dx, dy),
+            ux = dx / len,
+            uy = dy / len,
+            w = 11;
+          x.fillStyle = cols[i % cols.length];
+          x.beginPath();
+          x.moveTo(px - ux * w, py - uy * w);
+          x.lineTo(px + ux * w, py + uy * w);
+          x.lineTo(px - uy * 22, py + ux * 22);
+          x.closePath();
+          x.fill();
+        }
+      }
+      async function doExport() {
+        var list = exList();
+        if (!list.length) {
+          $("ex-msg").textContent = "沒有可以匯出的法被。";
+          return;
+        }
+        var cols = Math.min(5, +$("ex-cols").value),
+          color = $("ex-color").value,
+          showPrice = $("ex-price").checked;
+        var title = $("ex-title").value.trim() || "法被圖鑑",
+          sub = $("ex-sub").value.trim(),
+          author = $("ex-author").value.trim(),
+          social = $("ex-social").value.trim();
+        MINE.author = author;
+        MINE.social = social;
+        MINE.cols = cols;
+        MINE.color = color;
+        MINE.showPrice = showPrice;
+        saveMine();
+        $("ex-go").disabled = true;
+        var FONT = '"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif';
+        var imgs = {},
+          bad = 0,
+          done = 0,
+          withPhoto = list.filter(function (d) {
+            return d.photo;
+          }).length;
+        await Promise.all(
+          list.map(function (d) {
+            if (!d.photo) return null;
+            return getImg(d).then(function (im) {
+              if (im) imgs[d.id] = im;
+              else bad++;
+              $("ex-msg").textContent = "載入照片中… " + ++done + " / " + withPhoto;
+            });
+          }),
+        );
+        var gset = {};
+        list.forEach(function (d) {
+          gset[d.group] = 1;
+        });
+        var gids = Object.keys(gset),
+          bandLogo = null;
+        if (gids.length === 1) {
+          var lg = gobj(gids[0]);
+          if (lg && lg.logo) {
+            var li = await loadImg(
+              lg.logo,
+              /^https?:/i.test(lg.logo) && lg.logo.indexOf(location.origin) !== 0,
+            );
+            if (li && safeImg(li)) bandLogo = li;
+          }
+        }
+        $("ex-msg").textContent = "載入字型中…";
+        var allText =
+          title +
+          sub +
+          author +
+          social +
+          "整理者：官方售價（日圓・含稅）共件*資料來源：匯出日期法被圖鑑0123456789/-¥円元" +
+          location.host +
+          location.pathname;
+        list.forEach(function (d) {
+          allText += d.name + (MINE.notes[d.id] || "") + (priceText(d) || "");
+        });
+        try {
+          await Promise.race([
+            Promise.all(
+              ["400 13px", "700 13px"].map(function (w) {
+                return document.fonts.load(w + ' "Noto Sans TC"', allText);
+              }),
+            ),
+            new Promise(function (r) {
+              setTimeout(r, 6000);
+            }),
+          ]);
+        } catch (e) {}
+        $("ex-msg").textContent = "產生圖片中…";
+        var hasPrice =
+            showPrice &&
+            list.some(function (d) {
+              return priceText(d);
+            }),
+          hasNote = list.some(function (d) {
+            return MINE.notes[d.id];
+          });
+        var SC = 2,
+          FR = 26,
+          IN = 30,
+          CW = 180,
+          IMG = 158,
+          GX = 14,
+          GY = 24,
+          NAME = 36,
+          PR = hasPrice ? 22 : 0,
+          NT = hasNote ? 20 : 0,
+          CH = IMG + 10 + NAME + PR + NT,
+          LOGO_H = bandLogo ? 78 : 0,
+          HEAD = 210 + LOGO_H,
+          FOOT = 56;
+        var gridW = cols * CW + (cols - 1) * GX,
+          W = Math.max(FR * 2 + IN * 2 + gridW, 620);
+        var gx0 = (W - gridW) / 2;
+        var maxRows = Math.max(1, Math.floor((15000 - HEAD - FOOT - FR * 2) / (CH + GY))),
+          rows = Math.ceil(list.length / cols),
+          pages = Math.ceil(rows / maxRows);
+        var now = new Date(),
+          ds = now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate();
+        var ink = "#3a2e28",
+          soft = "#8a7a6e";
+        for (var p = 0; p < pages; p++) {
+          var part = list.slice(p * maxRows * cols, (p + 1) * maxRows * cols),
+            r = Math.ceil(part.length / cols);
+          var H = FR * 2 + HEAD + r * CH + (r - 1) * GY + FOOT;
+          var c = document.createElement("canvas");
+          c.width = W * SC;
+          c.height = H * SC;
+          var x = c.getContext("2d");
+          x.scale(SC, SC);
+          x.textBaseline = "top";
+          x.fillStyle = color;
+          x.fillRect(0, 0, W, H);
+          rr(x, FR, FR, W - FR * 2, H - FR * 2, 18);
+          x.fillStyle = "#fffdf6";
+          x.fill();
+          bunting(x, FR, FR + 6, FR + Math.min(220, W * 0.26), FR + 56, 6);
+          bunting(x, W - FR - Math.min(220, W * 0.26), FR + 56, W - FR, FR + 6, 6);
+          x.font = "bold 34px " + FONT;
+          var tw = Math.min(W - FR * 2 - 200, Math.max(280, x.measureText(title).width + 70)),
+            tx = (W - tw) / 2,
+            ty = FR + 26,
+            th = 66;
+          rr(x, tx + 4, ty + 4, tw, th, 10);
+          x.fillStyle = color;
+          x.fill();
+          rr(x, tx, ty, tw, th, 10);
+          x.fillStyle = "#fff";
+          x.fill();
+          x.strokeStyle = ink;
+          x.lineWidth = 2.5;
+          x.stroke();
+          x.fillStyle = ink;
+          x.textAlign = "center";
+          x.fillText(
+            wrap(x, title + (pages > 1 ? "（" + (p + 1) + "/" + pages + "）" : ""), tw - 30, 1)[0],
+            W / 2,
+            ty + 15,
+          );
+          if (bandLogo) {
+            var lmw = Math.min(380, W - FR * 2 - 80),
+              ls = Math.min(lmw / bandLogo.width, LOGO_H / bandLogo.height),
+              lw = bandLogo.width * ls,
+              lh = bandLogo.height * ls;
+            x.drawImage(bandLogo, (W - lw) / 2, ty + th + 14 + (LOGO_H - lh) / 2, lw, lh);
+          }
+          if (sub) {
+            x.font = "bold 18px " + FONT;
+            x.fillStyle = "#e8498c";
+            x.fillText(
+              wrap(x, sub, W - FR * 2 - 60, 1)[0],
+              W / 2,
+              ty + th + 14 + LOGO_H + (bandLogo ? 8 : 0),
+            );
+          }
+          x.textAlign = "left";
+          x.font = "13px " + FONT;
+          x.fillStyle = soft;
+          var iy = FR + HEAD - 46;
+          if (author) x.fillText("整理者：" + author, FR + IN, iy);
+          if (social) x.fillText(social, FR + IN, iy + 18);
+          x.textAlign = "right";
+          if (hasPrice) x.fillText("官方售價（日圓・含稅）", W - FR - IN, iy);
+          x.fillText("共 " + list.length + " 件", W - FR - IN, iy + 18);
+          x.strokeStyle = "#eadfce";
+          x.lineWidth = 1;
+          x.beginPath();
+          x.moveTo(FR + IN, FR + HEAD - 8);
+          x.lineTo(W - FR - IN, FR + HEAD - 8);
+          x.stroke();
+          part.forEach(function (d, i) {
+            var cx = gx0 + (i % cols) * (CW + GX),
+              cy = FR + HEAD + Math.floor(i / cols) * (CH + GY),
+              ix = cx + (CW - IMG) / 2,
+              im = imgs[d.id];
+            if (im) {
+              var s = Math.min(IMG / im.width, IMG / im.height),
+                w = im.width * s,
+                h = im.height * s;
+              x.save();
+              rr(x, ix, cy, IMG, IMG, 8);
+              x.clip();
+              x.drawImage(im, ix + (IMG - w) / 2, cy + (IMG - h) / 2, w, h);
+              x.restore();
+            } else drawCoat(x, ix + IMG / 2, cy + IMG / 2, IMG * 0.78, d.hue);
+            x.textAlign = "center";
+            x.fillStyle = ink;
+            x.font = "bold 13px " + FONT;
+            wrap(x, d.name, CW - 6, 2).forEach(function (l, k) {
+              x.fillText(l, cx + CW / 2, cy + IMG + 10 + k * 17);
+            });
+            var y = cy + IMG + 10 + NAME;
+            if (hasPrice) {
+              var pt = priceText(d);
+              if (pt) {
+                x.font = "bold 16px " + FONT;
+                x.fillStyle = ink;
+                x.fillText(pt, cx + CW / 2, y);
+              }
+              y += PR;
+            }
+            if (MINE.notes[d.id]) {
+              x.font = "bold 13px " + FONT;
+              x.fillStyle = "#e8498c";
+              x.fillText(wrap(x, MINE.notes[d.id], CW - 6, 1)[0], cx + CW / 2, y);
+            }
+          });
+          x.textAlign = "left";
+          x.font = "12px " + FONT;
+          x.fillStyle = soft;
+          x.fillText(
+            "*資料來源：" +
+              (/^https?:/.test(location.protocol)
+                ? location.host + location.pathname.replace(/[^/]*$/, "")
+                : "法被圖鑑"),
+            FR + IN,
+            H - FR - 36,
+          );
+          x.textAlign = "right";
+          x.fillText("匯出日期 " + ds, W - FR - IN, H - FR - 36);
+          x.textAlign = "left";
+          var blob = await new Promise(function (res) {
+            c.toBlob(res, "image/png");
+          });
+          if (!blob) {
+            $("ex-msg").textContent = "產生失敗：圖片太大，請減少件數後再試。";
+            $("ex-go").disabled = false;
+            return;
+          }
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download =
+            title.replace(/[\\/:*?"<>|]/g, "_") +
+            "-" +
+            now.getFullYear() +
+            String(now.getMonth() + 1).padStart(2, "0") +
+            String(now.getDate()).padStart(2, "0") +
+            (pages > 1 ? "-" + (p + 1) : "") +
+            ".png";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          (function (u) {
+            setTimeout(function () {
+              URL.revokeObjectURL(u);
+            }, 5000);
+          })(a.href);
+        }
+        $("ex-msg").textContent =
+          "完成！已下載 " +
+          pages +
+          " 張 PNG" +
+          (bad ? "。有 " + bad + " 張照片無法載入，已用法被圖示代替。" : "。");
+        $("ex-go").disabled = false;
+      }
+      $("export").onclick = openExport;
+      $("ex-go").onclick = function () {
+        doExport().catch(function (e) {
+          $("ex-msg").textContent = "匯出失敗：" + e.message;
+          $("ex-go").disabled = false;
+        });
+      };
+      $("ex-close").onclick = function () {
+        $("exdlg").close();
+      };
+      $("exdlg").addEventListener("click", function (e) {
+        if (e.target === this) this.close();
+      });
+      updateExportBtn();
+      var ARTIST = {
+        poppinparty: 8,
+        afterglow: 9,
+        pastelpalettes: 10,
+        roselia: 11,
+        hellohappyworld: 12,
+        morfonica: 13,
+        raiseasuilen: 14,
+        mygo: 15,
+        avemujica: 16,
+        夢限大mewtype: 17,
+      };
+      var GBC = { togenashitogeari: "tgtg", diamonddust: "dd" };
+      var GBC_URL = "https://raw.githubusercontent.com/Aemo-0304/hapi/data/gbc-lives.json",
+        GBC_P = null;
+      var NEXT = {};
+      function gkey(gid) {
+        var g = GROUPS.filter(function (x) {
+          return x.id === gid;
+        })[0];
+        return g ? g.name.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]/g, "") : "";
+      }
+      function hasNext(gid) {
+        var k = gkey(gid);
+        return !!(ARTIST[k] || GBC[k]);
+      }
+      function loadGbc(key) {
+        if (!GBC_P)
+          GBC_P = fetch(GBC_URL, { cache: "no-cache" })
+            .then(function (r) {
+              if (!r.ok) throw new Error(r.status);
+              return r.json();
+            })
+            .catch(function (e) {
+              GBC_P = null;
+              throw e;
+            });
+        var today = todayStr();
+        return GBC_P.then(function (j) {
+          var best = null;
+          (j.events || []).forEach(function (e) {
+            if ((e.groups || []).indexOf(key) < 0) return;
+            (e.items || []).forEach(function (it) {
+              if (it.date >= today && (!best || it.date < best.start))
+                best = { title: e.title, link: e.link, start: it.date, when: "", place: it.place || "" };
+            });
+          });
+          return best;
+        }).catch(function () {
+          return undefined;
+        });
+      }
+      function artistId(gid) {
+        return ARTIST[gkey(gid)] || 0;
+      }
+      function todayStr() {
+        var n = new Date();
+        return (
+          n.getFullYear() +
+          "-" +
+          String(n.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(n.getDate()).padStart(2, "0")
+        );
+      }
+      function loadNext(aid) {
+        if (NEXT[aid]) return NEXT[aid];
+        var today = todayStr();
+        NEXT[aid] = fetch(
+          LIVES_API +
+            "events?tax_artist=" +
+            aid +
+            "&per_page=50&_fields=title,link,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place",
+        )
+          .then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+          })
+          .then(function (j) {
+            var up = j
+              .map(function (e) {
+                var a = e.acf || {},
+                  d = a.cf_events_dates || {};
+                return {
+                  title: decodeHtml((e.title && e.title.rendered) || ""),
+                  link: e.link,
+                  start: (d.cf_events_dates_start || "").slice(0, 10),
+                  when: a.cf_events_schedule || "",
+                  place: a.cf_events_place || "",
+                };
+              })
+              .filter(function (e) {
+                return e.start && e.start >= today;
+              })
+              .sort(function (a, b) {
+                return a.start.localeCompare(b.start);
+              });
+            return up[0] || null;
+          })
+          .catch(function () {
+            delete NEXT[aid];
+            return undefined;
+          });
+        return NEXT[aid];
+      }
+      function renderNext(gid) {
+        var aid = artistId(gid),
+          gk = GBC[gkey(gid)],
+          box = $("nextlive");
+        if (!box || !(aid || gk)) return;
+        box.innerHTML = '<span class="nl-tag">下一場活動</span><span class="nl-loading">讀取中…</span>';
+        (aid ? loadNext(aid) : loadGbc(gk)).then(function (e) {
+          box = $("nextlive");
+          if (!box || S.group !== gid) return;
+          if (e === undefined) {
+            box.remove();
+            return;
+          }
+          if (!e) {
+            box.innerHTML =
+              '<span class="nl-tag">下一場活動</span><span class="nl-loading">官網目前沒有已公布的活動</span>';
+            return;
+          }
+          var t = todayStr().split("-"),
+            s = e.start.split("-");
+          var days = Math.round(
+            (Date.UTC(+s[0], s[1] - 1, +s[2]) - Date.UTC(+t[0], t[1] - 1, +t[2])) / 86400000,
+          );
+          box.innerHTML =
+            '<a href="' +
+            esc(e.link) +
+            '" target="_blank" rel="noopener">' +
+            '<div class="nl-count">' +
+            (days === 0 ? "<b>今天</b>" : "倒數<b>" + days + "</b>天") +
+            "</div>" +
+            '<div class="nl-info"><span class="nl-tag">下一場活動</span><h3>' +
+            esc(e.title) +
+            "</h3>" +
+            "<small>📅 " +
+            esc(e.when || e.start.replace(/^(\d+)-0?(\d+)-0?(\d+)$/, "$1年$2月$3日")) +
+            (e.place ? "　📍 " + esc(e.place) : "") +
+            "</small></div></a>";
+        });
+      }
+      var LIVES = null,
+        LIVES_ERR = false,
+        LIVES_API = "https://bang-dream.com/wp-json/wp/v2/";
+      function decodeHtml(s) {
+        var t = document.createElement("textarea");
+        t.innerHTML = s;
+        return t.value;
+      }
+      function loadLives() {
+        try {
+          var c = JSON.parse(sessionStorage.getItem("hapi-lives4") || "null");
+          if (c && Date.now() - c.t < 3600000) {
+            LIVES = c.d;
+            return Promise.resolve();
+          }
+        } catch (e) {}
+        var now = new Date(),
+          today =
+            now.getFullYear() +
+            "-" +
+            String(now.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(now.getDate()).padStart(2, "0");
+        return fetch(
+          LIVES_API +
+            "events?tax_events=51&per_page=50&_fields=id,title,link,featured_media,acf.cf_events_dates,acf.cf_events_schedule,acf.cf_events_place,acf.cf_events_image",
+        )
+          .then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+          })
+          .then(function (j) {
+            var up = j
+              .map(function (e) {
+                var a = e.acf || {},
+                  d = a.cf_events_dates || {};
+                return {
+                  title: decodeHtml((e.title && e.title.rendered) || ""),
+                  link: e.link,
+                  start: d.cf_events_dates_start || "",
+                  end: d.cf_events_dates_end || "",
+                  when: a.cf_events_schedule || "",
+                  place: a.cf_events_place || "",
+                  img: a.cf_events_image || 0,
+                  fm: e.featured_media || 0,
+                };
+              })
+              .filter(function (e) {
+                return e.start && e.start.slice(0, 10) >= today;
+              })
+              .sort(function (a, b) {
+                return a.start.localeCompare(b.start);
+              })
+              .slice(0, 4);
+            var ids = [];
+            up.forEach(function (e) {
+              if (e.img) ids.push(e.img);
+              if (e.fm) ids.push(e.fm);
+            });
+            return (
+              ids.length
+                ? fetch(
+                    LIVES_API + "media?include=" + ids.join(",") + "&per_page=20&_fields=id,source_url",
+                  ).then(function (r) {
+                    return r.ok ? r.json() : [];
+                  })
+                : Promise.resolve([])
+            ).then(function (m) {
+              var map = {};
+              m.forEach(function (x) {
+                map[x.id] = x.source_url;
+              });
+              up.forEach(function (e) {
+                e.src = map[e.img] || map[e.fm] || "";
+              });
+              LIVES = up;
+              try {
+                sessionStorage.setItem("hapi-lives4", JSON.stringify({ t: Date.now(), d: up }));
+              } catch (e) {}
+            });
+          })
+          .catch(function () {
+            LIVES_ERR = true;
+          });
+      }
+      function renderLives() {
+        var box = $("lives");
+        if (!box) return;
+        var head =
+          '<div class="lives-head"><h2>近期演唱會</h2><a href="https://bang-dream.com/events/" target="_blank" rel="noopener">資料來源：BanG Dream! 官方網站 ›</a></div>';
+        if (LIVES_ERR) {
+          box.innerHTML =
+            head + '<p class="lives-loading">暫時無法取得演唱會資訊，請點右上方連結到官網查看。</p>';
+          return;
+        }
+        if (!LIVES) {
+          box.innerHTML = head + '<p class="lives-loading">載入中…</p>';
+          return;
+        }
+        if (!LIVES.length) {
+          box.innerHTML = head + '<p class="lives-loading">目前沒有即將舉行的演唱會。</p>';
+          return;
+        }
+        box.innerHTML =
+          head +
+          '<div class="lives-grid">' +
+          LIVES.map(function (e) {
+            return (
+              '<a class="live" href="' +
+              esc(e.link) +
+              '" target="_blank" rel="noopener">' +
+              '<div class="live-img">' +
+              (e.src ? '<img src="' + esc(e.src) + '" alt="" loading="lazy" onerror="this.remove()">' : "") +
+              "</div>" +
+              '<div class="live-body"><b class="live-date">' +
+              esc(e.when || e.start.slice(0, 10)) +
+              "</b><h3>" +
+              esc(e.title) +
+              "</h3>" +
+              (e.place ? "<small>📍 " + esc(e.place) + "</small>" : "") +
+              "</div></a>"
+            );
+          }).join("") +
+          "</div>";
+      }
+      $("livesbtn").onclick = function () {
+        LIVES_ERR = false;
+        renderLives();
+        $("livesdlg").showModal();
+        if (!LIVES) loadLives().then(renderLives);
+      };
+      $("lives-close").onclick = function () {
+        $("livesdlg").close();
+      };
+      $("livesdlg").addEventListener("click", function (e) {
+        if (e.target === this) this.close();
+      });
+      buildFilters();
+      buildChips();
+      render();
+    </script>
+  </body>
 </html>
