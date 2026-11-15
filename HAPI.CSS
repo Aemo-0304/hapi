@@ -186,9 +186,12 @@ dialog.advdlg[open]{display:flex}
 .adv-body{overflow:auto;padding:8px 24px 16px;flex:1}
 .adv-row{display:grid;grid-template-columns:170px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
 .adv-g{display:flex;flex-direction:column;gap:6px;align-items:stretch}
-.adv-g b{background:#3b3340;color:#fff;border-radius:999px;padding:3px 12px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adv-g b{display:flex;align-items:center;gap:6px;background:#3b3340;color:#fff;border-radius:999px;padding:3px 12px 3px 6px;font-size:13px;white-space:nowrap;overflow:hidden}
+.adv-g b span{overflow:hidden;text-overflow:ellipsis}
+.adv-gi{flex:none;height:18px;width:auto;max-width:40px;object-fit:contain;filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff)}
 .adv-sel{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-weight:700;cursor:pointer;box-shadow:0 2px 0 #0000001a}
-.adv-ms{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.adv-ms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (min-width:900px){.adv-ms{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .adv-m{position:relative;display:flex;align-items:center;gap:8px;padding:8px 10px 8px 8px;border:2px solid transparent;border-radius:10px;background:color-mix(in srgb,var(--ink) 6%,var(--panel));color:var(--ink);cursor:pointer;text-align:left;transition:background .15s}
 .adv-m.on{background:color-mix(in srgb,var(--accent) 28%,var(--panel));border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
 .adv-m.zero{opacity:.55}
@@ -214,7 +217,7 @@ dialog.advdlg[open]{display:flex}
   .adv-row{grid-template-columns:1fr}
   .adv-g{flex-direction:row;align-items:center}
   .adv-g b{flex:1}
-  .adv-ms{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+  
   .av{width:36px;height:36px;font-size:15px}
   .nm{font-size:13px}
   .adv-btn{min-width:0;flex:1;padding:11px 10px;font-size:15px}
