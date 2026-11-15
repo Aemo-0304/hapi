@@ -3,16 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>法被圖鑑｜收藏資料庫</title>
+<title>BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫</title>
+<meta name="description" content="BanG Dream!（邦多利）法被圖鑑：收錄 Poppin'Party、Afterglow、Pastel*Palettes、Roselia、Hello, Happy World!、Morfonica、RAISE A SUILEN、MyGO!!!!!、Ave Mujica、夢限大みゅーたいぷ，以及 トゲナシトゲアリ、Diamond Dust 的演唱會法被（ハッピ）照片、官方售價與發售活動，可依樂團、角色篩選並匯出自己的收藏圖鑑。">
+<meta name="google-site-verification" content="Sszo54LSO_saCJkc9ENuyC2y8mzj0m0679ZRtMY-iH0">
+<link rel="canonical" href="https://aemo-0304.github.io/hapi/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&text=BanGDream!&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#e8498c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="法被圖鑑">
+<meta property="og:title" content="BanG Dream! 法被圖鑑｜邦多利法被收藏資料庫">
+<meta property="og:description" content="收錄 BanG Dream! 各樂團與 トゲナシトゲアリ 的演唱會法被照片、官方售價與發售活動，可依樂團、角色篩選並匯出收藏圖鑑。">
+<meta property="og:url" content="https://aemo-0304.github.io/hapi/">
+<meta property="og:image" content="https://aemo-0304.github.io/hapi/photos/logo_poppinparty.webp">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"BanG Dream! 法被圖鑑","alternateName":["法被圖鑑","邦多利法被圖鑑"],"url":"https://aemo-0304.github.io/hapi/","inLanguage":"zh-Hant"}</script>
 </head>
 <body>
 <header>
-  <h1>法被圖鑑</h1>
+  <h1 class="brand"><span class="brand-en">BanG Dream!</span><span class="brand-zh">法被圖鑑</span></h1>
   <div style="display:flex;gap:8px">
     <span class="iconbtn counter" id="visits" title="累計到訪人數（同一個瀏覽器分頁只算一次）">到訪人數：…</span>
     <button class="iconbtn" id="livesbtn" type="button">近期演唱會</button>
-    <button class="iconbtn" id="shop" type="button">二手平台推薦</button>
-    <button class="iconbtn" id="help" type="button">更新日誌</button>
     <button class="iconbtn" id="theme" type="button" aria-label="切換深色或淺色模式">🌙</button>
   </div>
   <link rel="stylesheet" type="text/css" href="HAPI.CSS"/>
@@ -25,18 +41,13 @@
     <option value="old">發售日期（舊→新）</option>
     <option value="name">名稱（A→Z）</option>
   </select>
+  <button class="btn-adv" id="adv" type="button" aria-haspopup="dialog">🔍 進階搜尋<span class="adv-n" id="adv-n" hidden></span></button>
   <button class="btn-export" id="export" type="button">⬇ 匯出圖鑑</button>
 </div>
 <div class="chips" id="chips" role="group" aria-label="依團體篩選"></div>
 <div class="chips" id="members" role="group" aria-label="依角色篩選" style="display:none"></div>
 
-<div class="layout">
-  <aside aria-label="篩選條件">
-    <details open><summary>發售年份</summary><div class="opts" id="f-year"></div></details>
-    <details open><summary>角色人物</summary><div class="opts" id="f-char" style="max-height:280px"></div></details>
-    <details><summary>販售地點</summary><div class="opts" id="f-place"></div></details>
-    <button class="reset" id="reset" type="button">重置所有篩選</button>
-  </aside>
+<div class="layout one">
   <main id="main"></main>
 </div>
 <footer><a href="https://www.threads.com/@aemo_gbp?hl=zh-tw" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">聯繫我</a></footer>
@@ -77,20 +88,31 @@
     <button class="close" id="ex-go" type="button" style="flex:2">產生並下載 PNG</button>
   </div>
 </dialog>
+<dialog id="advdlg" class="advdlg" aria-labelledby="adv-h">
+  <div class="adv-top"><h2 id="adv-h">進階搜尋</h2><button class="adv-sel" id="adv-all" type="button"><i class="ck"></i>全員選擇</button></div>
+  <div class="adv-body">
+    <div id="adv-chars"></div>
+    <h3 class="adv-sub">發售年份</h3><div class="adv-tags" id="adv-year"></div>
+    <h3 class="adv-sub">販售地點</h3><div class="adv-tags" id="adv-place"></div>
+  </div>
+  <div class="adv-foot">
+    <button class="adv-btn" id="adv-reset" type="button">清除條件</button>
+    <button class="adv-btn" id="adv-cancel" type="button">取消</button>
+    <button class="adv-btn ok" id="adv-ok" type="button">確定</button>
+  </div>
+</dialog>
 <dialog id="livesdlg" aria-label="近期演唱會" class="livesdlg">
   <section class="lives" id="lives"></section>
   <button class="close" id="lives-close" type="button">關閉</button>
 </dialog>
-<dialog id="shopdlg" aria-labelledby="shop-title" style="max-width:440px">
-  <h2 id="shop-title" style="margin:0 0 12px;font-size:20px">二手平台推薦</h2>
-  <div class="helpbody" id="shop-body"></div>
-  <button class="close" id="shop-close" type="button">關閉</button>
-</dialog>
-<dialog id="helpdlg" aria-labelledby="help-title" style="max-width:440px">
-  <h2 id="help-title" style="margin:0 0 12px;font-size:20px">更新日誌</h2>
-  <div class="helpbody" id="help-body"></div>
-  <button class="close" id="help-close" type="button">知道了</button>
-</dialog>
+<div class="fab-panel" id="fabpanel" role="dialog" aria-label="二手平台推薦與更新日誌" hidden>
+  <div class="fab-tabs" role="tablist">
+    <button type="button" role="tab" class="fab-tab" id="tab-shop" data-tab="shop">🛍️ <span id="shop-title">二手平台推薦</span></button>
+    <button type="button" role="tab" class="fab-tab" id="tab-help" data-tab="help">📕 <span id="help-title">更新日誌</span></button>
+  </div>
+  <div class="fab-body helpbody" id="fab-body"></div>
+</div>
+<button type="button" class="fab" id="fab" aria-expanded="false" aria-controls="fabpanel" title="二手平台推薦／更新日誌"><img class="fab-ico" src="photos/fab_avatar.webp?v=3" alt=""><span class="fab-x">✕</span></button>
 <dialog id="dlg" aria-labelledby="d-name">
   <div class="d-img"><div id="d-img"></div><button class="d-x" id="dlg-close" type="button" aria-label="關閉">✕</button></div>
   <div class="d-body">
@@ -143,40 +165,57 @@ function buildMembers(){
   });
 }
 
-function buildOpts(key,el,vals){
-  el.innerHTML="";
-  vals.forEach(function(v){
-    var l=document.createElement("label"),c=document.createElement("input");
-    c.type="checkbox";c.checked=!!S[key][v];
-    c.onchange=function(){if(c.checked)S[key][v]=1;else delete S[key][v];render()};
-    l.appendChild(c);l.appendChild(document.createTextNode(v));el.appendChild(l);
-  });
-}
+// ===== 進階搜尋（角色／年份／地點，按「確定」才套用）=====
+var T=null;
+function cp(o){var r={};for(var k in o)r[k]=1;return r}
+function charGroups(){return GROUPS.filter(function(g){return g.members&&g.members.length})}
+function allCharKeys(){var ks=[];charGroups().forEach(function(g){ks.push(g.id+":all");g.members.forEach(function(m){ks.push(g.id+":"+m.id)})});return ks}
+function shortName(n){return n.replace(/^「[^」]*」/,"").split("／")[0].trim()}
 function buildFilters(){
-  var ys={};DATA.forEach(function(d){ys[d.year]=1});
-  buildOpts("year",$("f-year"),Object.keys(ys).map(Number).sort(function(a,b){return b-a}));
-  buildOpts("place",$("f-place"),PLACES);
-  buildChars();
+  var n=Object.keys(S.chars).length+Object.keys(S.year).length+Object.keys(S.place).length;
+  var b=$("adv-n");b.hidden=!n;b.textContent=n;
+  if($("advdlg").open)buildAdv();
 }
-// 左側「角色人物」：列出有團員的團體，依團體分組，可複選（key = 團體id:團員id）
-function buildChars(){
-  var el=$("f-char");el.innerHTML="";
-  var gs=GROUPS.filter(function(g){return g.members&&g.members.length});
-  if(!gs.length){el.innerHTML='<span style="color:var(--muted);font-size:14px">尚未設定團員，可到後台新增</span>';return}
-  gs.forEach(function(g){
-    if(gs.length>1){var h=document.createElement("b");h.textContent=g.name;h.style.cssText="font-size:13px;color:var(--muted);margin-top:4px";el.appendChild(h)}
-    [{id:"all",name:g.name+"全團",color:"hsl("+g.hue+" 80% 55%)"}].concat(g.members).forEach(function(m){
-      var k=g.id+":"+m.id,n=DATA.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
-      var l=document.createElement("label"),c=document.createElement("input");
-      c.type="checkbox";c.checked=!!S.chars[k];
-      c.onchange=function(){if(c.checked)S.chars[k]=1;else delete S.chars[k];render()};
-      var dot=document.createElement("i");dot.style.cssText="width:10px;height:10px;border-radius:50%;flex:none;background:"+m.color;
-      var t=document.createElement("span");t.textContent=m.name;t.style.flex="1";
-      var c2=document.createElement("small");c2.textContent=n;c2.style.color="var(--muted)";
-      l.appendChild(c);l.appendChild(dot);l.appendChild(t);l.appendChild(c2);el.appendChild(l);
+function ck(on){return '<i class="ck'+(on?' on':'')+'"></i>'}
+function buildAdv(){
+  var html="";
+  charGroups().forEach(function(g){
+    var tiles=[{id:"all",name:"全團",color:"hsl("+g.hue+" 80% 55%)",avatar:g.icon}].concat(g.members);
+    var keys=tiles.map(function(m){return g.id+":"+m.id});
+    var allOn=keys.every(function(k){return T.chars[k]});
+    html+='<div class="adv-row"><div class="adv-g"><b>'+esc(g.name)+'</b><button type="button" class="adv-sel" data-gall="'+g.id+'">'+ck(allOn)+'全選</button></div><div class="adv-ms">';
+    tiles.forEach(function(m){
+      var k=g.id+":"+m.id,on=!!T.chars[k],n=DATA.filter(function(d){return d.group===g.id&&d.member===m.id}).length;
+      var av=m.avatar?'<img src="'+esc(m.avatar)+'" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\''+esc(shortName(m.name)).charAt(0)+'\'))">':esc(shortName(m.name).charAt(0));
+      html+='<button type="button" class="adv-m'+(on?' on':'')+(n?'':' zero')+'" data-k="'+esc(k)+'" aria-pressed="'+on+'" title="'+esc(m.name)+'（'+n+' 件）">'+ck(on)
+        +'<span class="av'+(m.avatar?' img':'')+'" style="--c:'+esc(m.color)+'">'+av+'</span><span class="nm">'+esc(shortName(m.name))+'</span></button>';
     });
+    html+='</div></div>';
   });
+  $("adv-chars").innerHTML=html||'<p class="adv-empty">尚未設定團員，可到後台新增</p>';
+  var ys={};DATA.forEach(function(d){ys[d.year]=1});
+  $("adv-year").innerHTML=Object.keys(ys).map(Number).sort(function(a,b){return b-a}).map(function(y){return '<button type="button" class="adv-tag'+(T.year[y]?' on':'')+'" data-y="'+y+'">'+ck(T.year[y])+y+'</button>'}).join("");
+  $("adv-place").innerHTML=PLACES.map(function(p){return '<button type="button" class="adv-tag'+(T.place[p]?' on':'')+'" data-p="'+esc(p)+'">'+ck(T.place[p])+esc(p)+'</button>'}).join("");
+  var ks=allCharKeys();$("adv-all").innerHTML=ck(ks.length&&ks.every(function(k){return T.chars[k]}))+"全員選擇";
 }
+$("adv").onclick=function(){T={chars:cp(S.chars),year:cp(S.year),place:cp(S.place)};buildAdv();$("advdlg").showModal()};
+$("advdlg").addEventListener("click",function(e){
+  if(e.target===this){this.close();return}
+  var t=e.target.closest("button");if(!t)return;
+  if(t.dataset.k){var k=t.dataset.k;if(T.chars[k])delete T.chars[k];else T.chars[k]=1}
+  else if(t.dataset.gall){var g=GROUPS.filter(function(x){return x.id===t.dataset.gall})[0],ks=[g.id+":all"].concat(g.members.map(function(m){return g.id+":"+m.id}));
+    var on=ks.every(function(k){return T.chars[k]});ks.forEach(function(k){if(on)delete T.chars[k];else T.chars[k]=1})}
+  else if(t.dataset.y){var y=t.dataset.y;if(T.year[y])delete T.year[y];else T.year[y]=1}
+  else if(t.dataset.p!=null){var p=t.dataset.p;if(T.place[p])delete T.place[p];else T.place[p]=1}
+  else if(t.id==="adv-all"){var ks=allCharKeys(),on=ks.every(function(k){return T.chars[k]});ks.forEach(function(k){if(on)delete T.chars[k];else T.chars[k]=1})}
+  else if(t.id==="adv-reset"){T={chars:{},year:{},place:{}}}
+  else if(t.id==="adv-cancel"){this.close();return}
+  else if(t.id==="adv-ok"){
+    var ks=allCharKeys();if(ks.length&&ks.every(function(k){return T.chars[k]}))T.chars={}; // 全選等於不篩選
+    S.chars=T.chars;S.year=T.year;S.place=T.place;this.close();buildFilters();render();return}
+  else return;
+  buildAdv();
+});
 function buildChips(){
   var box=$("chips");box.innerHTML="";
   GROUPS.forEach(function(g){
@@ -202,7 +241,7 @@ function render(){
   var active=q||S.group||has(S.year)||has(S.place)||has(S.chars);
   var main=$("main");
   if(!active){
-    var h='<div class="hint"><h2>點選團體，開始翻閱圖鑑</h2><p>也可以用搜尋或左側條件直接找</p></div><div class="groups">';
+    var h='<div class="hint"><h2>點選團體，開始翻閱圖鑑</h2><p>也可以用搜尋或「進階搜尋」直接找</p></div><div class="groups">';
     GROUPS.forEach(function(g){
       var n=DATA.filter(function(d){return d.group===g.id}).length;
       h+='<button class="gcard" type="button" style="--c:hsl('+g.hue+' 80% 55%)" data-g="'+g.id+'">'+(g.logo?'<img class="glogo" src="'+esc(g.logo)+'" alt="'+esc(g.name)+'" onerror="this.nextSibling.hidden=false;this.remove()"><b hidden>':'<b>')+esc(g.name)+'</b><small>'+n+' 件</small></button>';
@@ -269,12 +308,6 @@ $("d-pick").onclick=function(){var card=document.querySelector('.item[data-id="'
 $("d-next").onclick=function(){navDlg(1)};
 document.addEventListener("keydown",function(e){if(!$("dlg").open)return;if(e.key==="ArrowLeft")navDlg(-1);if(e.key==="ArrowRight")navDlg(1)});
 $("dlg-close").onclick=function(){$("dlg").close()};
-$("help").onclick=function(){
-  $("help-title").textContent=DB.helpTitle||Store.helpTitle;
-  $("help-body").innerHTML=Store.helpHtml(DB.help!=null?DB.help:Store.helpText);
-  $("helpdlg").showModal();
-};
-$("help-close").onclick=function(){$("helpdlg").close()};
 // ===== 到訪人數（使用免費計數服務 Abacus；同一瀏覽器分頁只算一次，本機開啟只讀不加）=====
 (function(){
   var API="https://abacus.jasoncameron.dev/",KEY="aemo-0304-hapi/visits",el=$("visits");
@@ -286,18 +319,30 @@ $("help-close").onclick=function(){$("helpdlg").close()};
     if(mode==="hit/")try{sessionStorage.setItem("hapi-visited","1")}catch(e){}
   }).catch(function(){el.textContent="到訪人數：—"});
 })();
-$("shop").onclick=function(){
+// ===== 右下角小圓點：二手平台推薦／更新日誌 =====
+var FAB_TAB="shop";
+function fabShow(tab){
+  FAB_TAB=tab;
   $("shop-title").textContent=DB.shopTitle||Store.shopTitle;
-  $("shop-body").innerHTML=Store.helpHtml(DB.shop!=null?DB.shop:Store.shopText);
-  $("shopdlg").showModal();
-};
-$("shop-close").onclick=function(){$("shopdlg").close()};
-$("shopdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
-$("helpdlg").addEventListener("click",function(e){if(e.target===this)this.close()});
+  $("help-title").textContent=DB.helpTitle||Store.helpTitle;
+  ["shop","help"].forEach(function(t){var b=$("tab-"+t);b.classList.toggle("on",t===tab);b.setAttribute("aria-selected",t===tab)});
+  $("fab-body").innerHTML=tab==="shop"?Store.helpHtml(DB.shop!=null?DB.shop:Store.shopText):Store.helpHtml(DB.help!=null?DB.help:Store.helpText);
+  $("fab-body").scrollTop=0;
+}
+function fabToggle(open){
+  var p=$("fabpanel");if(open==null)open=p.hidden;
+  if(open){fabShow(FAB_TAB);p.hidden=false;requestAnimationFrame(function(){p.classList.add("show")})}
+  else{p.classList.remove("show");setTimeout(function(){if(!p.classList.contains("show"))p.hidden=true},180)}
+  $("fab").classList.toggle("open",open);$("fab").setAttribute("aria-expanded",open);
+}
+$("fab").onclick=function(){fabToggle()};
+$("tab-shop").onclick=function(){fabShow("shop")};
+$("tab-help").onclick=function(){fabShow("help")};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("fabpanel").hidden)fabToggle(false)});
+document.addEventListener("click",function(e){if(!$("fabpanel").hidden&&!e.target.closest("#fabpanel,#fab"))fabToggle(false)});
 $("dlg").addEventListener("click",function(e){if(e.target===this)this.close()});
 $("q").oninput=function(){S.q=this.value;render()};
 $("sort").onchange=function(){S.sort=this.value;render()};
-$("reset").onclick=function(){S.q="";S.group=null;S.member=null;S.year={};S.place={};S.chars={};$("q").value="";buildFilters();buildChips();render()};
 $("theme").onclick=function(){
   var root=document.documentElement,dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);
   root.setAttribute("data-theme",dark?"light":"dark");this.textContent=dark?"🌙":"☀️";
@@ -442,7 +487,7 @@ async function doExport(){
   var title=$("ex-title").value.trim()||"法被圖鑑",sub=$("ex-sub").value.trim(),author=$("ex-author").value.trim(),social=$("ex-social").value.trim();
   MINE.author=author;MINE.social=social;MINE.cols=cols;MINE.color=color;MINE.showPrice=showPrice;saveMine();
   $("ex-go").disabled=true;
-  var FONT='"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif';
+  var FONT='"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif';
   var imgs={},bad=0,done=0,withPhoto=list.filter(function(d){return d.photo}).length;
   await Promise.all(list.map(function(d){
     if(!d.photo)return null;
@@ -451,6 +496,11 @@ async function doExport(){
   // 全部法被屬於同一個樂團時，在標題下方放該樂團 LOGO
   var gset={};list.forEach(function(d){gset[d.group]=1});var gids=Object.keys(gset),bandLogo=null;
   if(gids.length===1){var lg=gobj(gids[0]);if(lg&&lg.logo){var li=await loadImg(lg.logo,/^https?:/i.test(lg.logo)&&lg.logo.indexOf(location.origin)!==0);if(li&&safeImg(li))bandLogo=li}}
+  // 先把匯出會用到的字全部載入 Noto Sans TC，避免部分字退回系統字體造成字型不一致
+  $("ex-msg").textContent="載入字型中…";
+  var allText=title+sub+author+social+"整理者：官方售價（日圓・含稅）共件*資料來源：匯出日期法被圖鑑0123456789/-¥円元"+location.host+location.pathname;
+  list.forEach(function(d){allText+=d.name+(MINE.notes[d.id]||"")+(priceText(d)||"")});
+  try{await Promise.race([Promise.all(["400 13px","700 13px"].map(function(w){return document.fonts.load(w+' "Noto Sans TC"',allText)})),new Promise(function(r){setTimeout(r,6000)})])}catch(e){}
   $("ex-msg").textContent="產生圖片中…";
   var hasPrice=showPrice&&list.some(function(d){return priceText(d)}),hasNote=list.some(function(d){return MINE.notes[d.id]});
   var SC=2,FR=26,IN=30,CW=180,IMG=158,GX=14,GY=24,NAME=36,PR=hasPrice?22:0,NT=hasNote?20:0,CH=IMG+10+NAME+PR+NT,LOGO_H=bandLogo?78:0,HEAD=210+LOGO_H,FOOT=56;
