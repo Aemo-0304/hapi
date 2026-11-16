@@ -179,11 +179,12 @@ header>div{flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
 .btn-adv:hover{background:color-mix(in srgb,var(--accent) 10%,var(--panel))}
 .adv-n[hidden]{display:none}
 .adv-n{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:6px;padding:0 6px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-size:12px}
-dialog.advdlg{max-width:980px;padding:0;overflow:hidden;display:none;flex-direction:column;max-height:calc(100dvh - 32px)}
+dialog.advdlg{max-width:980px;padding:0;overflow:hidden;display:none;flex-direction:column;height:calc(100vh - 32px);height:calc(100dvh - 32px);max-height:900px}
 dialog.advdlg[open]{display:flex}
 .adv-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 12px;border-bottom:2px solid var(--accent)}
 .adv-top h2{margin:0;font-size:22px}
-.adv-body{overflow:auto;padding:8px 24px 16px;flex:1}
+.adv-top,.adv-foot{flex:none}
+.adv-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 24px 16px;flex:1 1 auto;min-height:0}
 .adv-row{display:grid;grid-template-columns:170px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
 .adv-g{display:flex;flex-direction:column;gap:6px;align-items:stretch}
 .adv-g b{display:flex;align-items:center;gap:6px;background:#3b3340;color:#fff;border-radius:999px;padding:3px 12px 3px 6px;font-size:13px;white-space:nowrap;overflow:hidden}
