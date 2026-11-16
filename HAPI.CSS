@@ -241,3 +241,9 @@ dialog.advdlg[open]{display:flex}
 .fab-tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--bg)}
 .fab-body{flex:1;overflow:auto;padding:16px 18px;margin:0;line-height:1.7}
 @media (max-width:480px){.fab{right:14px;bottom:14px;width:52px;height:52px}.fab-panel{right:16px;bottom:78px;height:calc(100dvh - 110px)}}
+
+.about{max-width:860px;margin:8px auto 24px;padding:18px 22px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--muted);font-size:14px;line-height:1.8}
+.about h2{margin:0 0 6px;font-size:16px;color:var(--ink)}
+.about p{margin:0 0 6px}
+.about p:last-child{margin:0}
+@media (max-width:480px){.about{margin:8px 16px 20px;padding:14px 16px}}
